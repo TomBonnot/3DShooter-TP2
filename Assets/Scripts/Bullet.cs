@@ -3,9 +3,15 @@ using UnityEngine;
 
 public class BulletDestroy : MonoBehaviour
 {
+    //Decal to spawn when the bullet hit the ground
     [SerializeField] private GameObject _decal;
+
+    //main timer, destroy the gameobject at the end of it
     [SerializeField] private float _timer = 3f;
 
+    /**
+    *   Whenever there is a collision, spawn a decal and start a coroutine 
+    **/
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -18,6 +24,9 @@ public class BulletDestroy : MonoBehaviour
         }
     }
 
+    /**
+    *   Coroutine to decrease the size of the decal over time and destroy the gameobject at the end
+    **/
     private IEnumerator FadeOutDecal(GameObject decal)
     {
         float elapsedTime = 0f;

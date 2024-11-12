@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class VolumeSlider : MonoBehaviour
 {
+    //enumerator of VolumeType to handle easily switch cases
     private enum VolumeType
     {
         MASTER,
@@ -10,16 +11,20 @@ public class VolumeSlider : MonoBehaviour
         SFX
     }
 
+    //Selecting the right VolumeType for the slider
     [Header("Type")]
     [SerializeField] private VolumeType volumeType;
-
     private Slider _volumeSlider;
 
+    //Getting the slider automatically
     private void Awake()
     {
         _volumeSlider = this.GetComponent<Slider>();
     }
 
+    /**
+    *   Update to handle the instance through a switch case with a this volumeType variable
+    **/
     void Update()
     {
         switch (volumeType)
@@ -39,6 +44,9 @@ public class VolumeSlider : MonoBehaviour
         }
     }
 
+    /**
+    *   When the slider has a value that has changed, correctly affect the variable 
+    **/
     public void OnSliderValueChanged()
     {
         switch (volumeType)
