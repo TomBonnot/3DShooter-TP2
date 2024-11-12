@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,8 @@ public class Controller : MonoBehaviour
     [SerializeField] private float _groundCheckDistance = 0.1f;
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _jumpForce;
+    [SerializeField] private float _rushMoveSpeed;
+    private float _tempoMoveSpeed;
 
     [Header("Camera Section")]
     [Range(0.1f, 9f)][SerializeField] private float _sensitivity = 1f;
@@ -36,6 +39,7 @@ public class Controller : MonoBehaviour
     public InputAction shoot;
     public InputAction pickup;
     public InputAction drop;
+    public InputAction rush;
 
     private Vector2 _lookInput;
     private Vector3 _localMove = Vector3.zero;
@@ -55,11 +59,13 @@ public class Controller : MonoBehaviour
         shoot.Enable();
         pickup.Enable();
         drop.Enable();
+        rush.Enable();
     }
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _tempoMoveSpeed = _moveSpeed;
     }
 
     void Update()
@@ -78,7 +84,21 @@ public class Controller : MonoBehaviour
                 Pickup(_toPickUp);
             if(drop.WasPressedThisFrame())
                 Drop();
+            if(rush.WasPressedThisFrame())
+                StartCoroutine(Rush());
+            if(rush.WasReleasedThisFrame())
+                _moveSpeed = _tempoMoveSpeed;
         }
+    }
+
+    private IEnumerator Rush()
+    {
+        while(_moveSpeed < _rushMoveSpeed)
+        {
+            _moveSpeed += Time.deltaTime * 2;
+            yield return null;
+        }
+        _moveSpeed = _rushMoveSpeed;
     }
 
     void FixedUpdate()
