@@ -98,6 +98,8 @@ public class Controller : MonoBehaviour
                 StartCoroutine(Rush());
             if(rush.WasReleasedThisFrame())
                 _moveSpeed = _tempoMoveSpeed;
+            if(jump.WasPressedThisFrame())
+                Jump();
             Look();
         }
 
@@ -127,8 +129,6 @@ public class Controller : MonoBehaviour
         if(_playerInputEnable)
         {
             Move();
-            if(jump.WasPressedThisFrame())
-                Jump();
         }
     }
 
