@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6142054959511529546}
   - component: {fileID: 5159823935570946809}
   - component: {fileID: -8618237384335918809}
-  - component: {fileID: 382746930930651588}
   - component: {fileID: 5507419693822179015}
+  - component: {fileID: 1013160206908623364}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Untagged
@@ -69,7 +69,7 @@ MonoBehaviour:
       IndexVersion: 0
       OptimizedTopology: 0
   sourceMesh: {fileID: 0}
-  sourceMeshRendererGUID: 61130f68-6af5-43f6-8196-485d594c858d
+  sourceMeshRendererGUID: 581e2401-e8d0-4c41-ad90-7362aa8e356e
   guid: 79c9f8a0-af73-4358-8591-6dc7877951ae
   localOptions:
     RecalculateTangents: 0
@@ -165,19 +165,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &382746930930651588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6532195775805099191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f7398af51aff841a0367af2759f4ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _timer: 1
 --- !u!136 &5507419693822179015
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -201,6 +188,18 @@ CapsuleCollider:
   m_Height: 7.5445356
   m_Direction: 1
   m_Center: {x: 0.0053408146, y: 3.7066407, z: 0.03125024}
+--- !u!114 &1013160206908623364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6532195775805099191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b28ddffc97e7c4c8af4e78a81baf4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-5651350061284250169
 MonoBehaviour:
   m_ObjectHideFlags: 0

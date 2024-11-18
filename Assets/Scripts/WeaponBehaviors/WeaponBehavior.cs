@@ -1,20 +1,34 @@
+using System;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public abstract class WeaponBehavior : MonoBehaviour
+public class WeaponBehavior : MonoBehaviour
 {
+    /** 
+    Ici on gère la logique Unity d'un Weapon en général
+    Ex: Chaque weapon a un rigidbody qui est physicalisé
+    Ne devrait jamais être directement associé à un objet dans la scène.
+    Toujours utiliser child classes
+    **/
+
     //Main variable visible on editor
     [SerializeField] protected GameObject _gunPoint;
-    [SerializeField] protected GameObject _weapon;
+    [SerializeField] protected GameObject _weaponPrefab;
+    [SerializeField] protected GameObject _projectile;
     [Range(50, 300)][SerializeField] protected float _bulletSpeed = 70f;
+    [Range(1, 10)][SerializeField] protected float _bulletLieftime = 3f;
+    [SerializeField] protected int _maxAmmo;
+
 
     //Every physics variable used
     protected Rigidbody _rb;
     protected RigidbodyConstraints _originalConstraints;
-    public Projectile projectile;
 
-    //Setting up the variable
-    void Start()
+    // Inner logic classes
+    public Projectile projectile;
+    public Weapon weapon;
+
+    protected void Start()
     {
         _rb = this.gameObject.GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
@@ -25,8 +39,7 @@ public abstract class WeaponBehavior : MonoBehaviour
     **/
     public virtual void Shoot()
     {
-        GameObject shotProjectile = Instantiate(projectile._projectilePrefab, projectile._projectilePrefab.transform.position, _weapon.transform.rotation);
-        shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
+        throw new NotImplementedException();
     }
 
     /**
