@@ -1,9 +1,6 @@
 using UnityEngine;
 
-public class RocketLauncher : Weapon
+public class RocketLauncherBehavior : WeaponBehavior
 {
-    public override void Shoot()
-    {
-        base.Shoot();
-    }
+    
 }

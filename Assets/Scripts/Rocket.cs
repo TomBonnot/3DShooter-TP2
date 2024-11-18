@@ -1,11 +1,9 @@
 using UnityEngine;
 
-public class Rocket : Bullet
+public class Rocket : ProjectileBehavior
 {
-    protected override float Timer => _timer;
-
     protected override void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject, _timer);
+        // Destroy(gameObject);
     }
 }

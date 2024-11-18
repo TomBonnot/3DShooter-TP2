@@ -32,8 +32,8 @@ public class Controller : MonoBehaviour
     //Weapon handling variable
     [Header("Shooting Section")]
     [SerializeField] private Transform _handleWeapon;
-    [SerializeField] private Weapon _weapon;
-    [SerializeField] private Weapon _toPickUp;
+    [SerializeField] private WeaponBehavior _weapon;
+    [SerializeField] private WeaponBehavior _toPickUp;
 
     //Input action section, has to be public or can be private with a SerializeField statement
     [Header("Input Section")]
@@ -136,7 +136,7 @@ public class Controller : MonoBehaviour
     *   Method to handle the pickup, setter of the _weapon variable
     *   @parameter Weapon weapon, the weapon variable used to set our main weapon, if null return
     **/
-    private void Pickup(Weapon weapon)
+    private void Pickup(WeaponBehavior weapon)
     {
         if(weapon == null)
             return;
@@ -175,7 +175,7 @@ public class Controller : MonoBehaviour
         RaycastHit hit = new RaycastHit();
         if(Physics.Raycast(ray, out hit, _distancePickUp))
         {
-            if(hit.collider.TryGetComponent<Weapon>(out Weapon weapon))
+            if(hit.collider.TryGetComponent<WeaponBehavior>(out WeaponBehavior weapon))
                 _toPickUp = weapon;
             else
                 _toPickUp = null;
