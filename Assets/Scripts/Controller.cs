@@ -229,4 +229,12 @@ public class Controller : MonoBehaviour
             if(hit.collider.CompareTag("Ground"))
                 _isGrounded = true;
     }
+
+    /**
+    *   Getter of the Rigidbody accessible for the weapons
+    **/
+    public Rigidbody GetRigidbody()
+    {
+        return this._rb;
+    }
 }
