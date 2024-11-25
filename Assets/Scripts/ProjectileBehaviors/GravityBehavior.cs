@@ -3,34 +3,46 @@ using UnityEngine;
 
 public class GravityBehavior : ProjectileBehavior
 {
-    /** Ici on gère le lifetime d'un inverseur de gravité **/
-    private float _radiusExplosion = 5f;
+    /** This class manages the behavior of the gravity projectile which reverses the gravity of objects **/
+
+    // Data of the launched projectile
+    GravityProjectile _gravityProjectile;
+
+    // 
     private void OnTriggerEnter(Collider other)
     {
-        
+        // Disable the collider otherwise too many other collisions
+        this.GetComponent<Collider>().enabled = false;
+
+        // Find every GameObject in the gravity explosion
         Vector3 _explosionPosition = transform.position;
-        Collider[] colliders = Physics.OverlapSphere(_explosionPosition, _radiusExplosion);
+        Collider[] colliders = Physics.OverlapSphere(_explosionPosition, _gravityProjectile._radiusExplosion);
 
         foreach (Collider hit in colliders)
         {
-            Rigidbody _rbHit = hit.GetComponent<Rigidbody>();
             AntiGravityObject _antiGravityObject = hit.GetComponent<AntiGravityObject>();
             AntiGravityPlayer _antiGravityPlayer = hit.GetComponent<AntiGravityPlayer>();
 
-            if (_rbHit != null && (_antiGravityObject != null || _antiGravityPlayer != null))
-            {                
-                if(_antiGravityObject != null)
-                {
-                    _antiGravityObject.ChangeGravity();
-                }
-                else if(_antiGravityPlayer != null)
-                {
-                    _antiGravityPlayer.ChangeGravity(); 
-                }
+            // Check if the GameObject hit is the player or an object whose gravity can be changed
+            if (_antiGravityObject != null)
+            {
+                // Change the gravity of the object
+                _antiGravityObject.ChangeGravity();
+            }
+            else if (_antiGravityPlayer != null)
+            {
+                // Change the gravity of the player
+                _antiGravityPlayer.ChangeGravity();
             }
         }
 
         Destroy(gameObject);
+    }
+
+    // Set the projectile to get the data
+    public void SetProjectile(GravityProjectile gravityProjectile)
+    {
+        this._gravityProjectile = gravityProjectile;
     }
 
     //private void OnCollisionEnter(Collision collision)

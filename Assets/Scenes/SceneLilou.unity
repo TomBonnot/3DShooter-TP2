@@ -777,7 +777,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gunPoint: {fileID: 350398459}
   _weaponPrefab: {fileID: 838952018}
-  _projectile: {fileID: 6532195775805099191, guid: 2751e86ae386a9b41ae2838b4a3d7867, type: 3}
+  _projectilePrefab: {fileID: 0}
   _bulletSpeed: 70
   _bulletLieftime: 3.03
   _maxAmmo: 0
@@ -2572,7 +2572,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5188096016644729977
 GameObject:
   m_ObjectHideFlags: 0
@@ -2617,6 +2617,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5188096016644729977}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &5789839820323306816
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109278917392811532, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5129940081276841202, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
+      propertyPath: m_Name
+      value: Player (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 840f395de2bbbeb488835939bcf1429a, type: 3}
 --- !u!54 &6012604534572735935
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2740,7 +2797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gunPoint: {fileID: 2326016854657878771}
   _weaponPrefab: {fileID: 5188096016644729977}
-  _projectile: {fileID: 3518497208811080718, guid: 9becd42c7ce9c704591334482a6555af, type: 3}
+  _projectilePrefab: {fileID: 3518497208811080718, guid: 9becd42c7ce9c704591334482a6555af, type: 3}
   _bulletSpeed: 50
   _bulletLieftime: 3
   _maxAmmo: 0
@@ -2778,10 +2835,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38bdd6936bcabf4c9d852eb2d4978ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  swinging: 0
   _groundCheckDistance: 0.1
-  _moveSpeed: 5
+  _moveSpeed: 1000
+  _maxVelocity: 50
   _jumpForce: 10
-  _rushMoveSpeed: 0
+  _rushMoveSpeed: 2000
   _sensitivity: 0.5
   _yRotationLimit: 70
   _distancePickUp: 2.5
@@ -2940,7 +2999,7 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   rush:
-    m_Name: 
+    m_Name: Rush
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: 1685d205-bf59-449a-bb9a-1a32bd126250
@@ -2982,3 +3041,4 @@ SceneRoots:
   - {fileID: 448208183}
   - {fileID: 316413145}
   - {fileID: 108729498981148014}
+  - {fileID: 5789839820323306816}
