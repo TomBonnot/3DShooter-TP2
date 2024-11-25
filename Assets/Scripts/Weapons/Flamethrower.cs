@@ -11,11 +11,10 @@ public class Flamethrower : Weapon
     private float _verticalBoostStrength;
     private float _horizontalBoostStrength;
     private float _baseVerticalBoostStrength;
-    public Flamethrower(GameObject weapon, GameObject gunPoint, Projectile projectile, int ammo, float verticalBoostStrength, float horizontalBoostStrength, float baseVerticalBoostStrength = 9.81f)
+    public Flamethrower(GameObject weapon, GameObject gunPoint, int ammo, float verticalBoostStrength, float horizontalBoostStrength, float baseVerticalBoostStrength = 9.81f)
     {
         this.weaponObject = weapon;
         this.gunPoint = gunPoint;
-        this.projectile = projectile;
         this.ammo = ammo;
         this._verticalBoostStrength = verticalBoostStrength;
         this._horizontalBoostStrength = horizontalBoostStrength;
