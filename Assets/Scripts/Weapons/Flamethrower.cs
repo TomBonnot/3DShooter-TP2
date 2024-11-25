@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -33,8 +34,9 @@ public class Flamethrower : Weapon
         }
         // If the player is looking straight down - hover without gaining height
         // Otherwise the player will lose height proportionally to how horizontally they are looking
-        return gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength);
-        // return 0f;
+        Debug.Log(gunPoint.transform.up.y + " " + playerLinearVel.y + " " + _verticalBoostStrength + " " + _baseVerticalBoostStrength);
+        // Debug.Log(gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength));
+        return (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * _verticalBoostStrength + _baseVerticalBoostStrength));
     }
 
     public float getHotizontalBoostStrength()

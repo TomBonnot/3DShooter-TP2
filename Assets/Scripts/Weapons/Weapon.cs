@@ -16,7 +16,7 @@ public abstract class Weapon
     public bool expendsAmmo()
     {
         // Returns true if shot ammo, false if there is no ammo left
-        Debug.Log("Ammo: " + ammo.ToString());
+        // Debug.Log("Ammo: " + ammo.ToString());
         if (ammo > 0)
         {
             ammo -= 1;
