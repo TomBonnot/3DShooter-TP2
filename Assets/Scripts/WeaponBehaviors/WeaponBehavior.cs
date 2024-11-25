@@ -18,6 +18,9 @@ public class WeaponBehavior : MonoBehaviour
     [Range(50, 300)][SerializeField] protected float _bulletSpeed = 70f;
     [Range(1, 10)][SerializeField] protected float _bulletLieftime = 3f;
     [SerializeField] protected int _maxAmmo;
+    [ContextMenu("Reload")] void resetAmmo() {
+        weapon.ammo = 2000;
+    }
 
 
     //Every physics variable used
@@ -40,6 +43,15 @@ public class WeaponBehavior : MonoBehaviour
     public virtual void Shoot()
     {
         throw new NotImplementedException();
+    }
+
+    public virtual void ShootHeld()
+    {
+        // Do nothing but does not need to be overriden
+    }
+    public virtual void ReleaseShoot()
+    {
+        // Do nothing but does not need to be overriden
     }
 
     /**
