@@ -14,6 +14,7 @@ public class Controller : MonoBehaviour
     private Vector2 _frameInput;
     private bool _playerInputEnable;
     private bool _isGrounded;
+    public bool swinging;
 
     //Every variable about moving, jumping etc...
     [Header("Move Section")]
@@ -276,4 +277,11 @@ public class Controller : MonoBehaviour
     {
         return this._rb;
     }
+
+    public void setPlayerInputAllowed(bool b)
+    {
+        _playerInputEnable = b;
+    }
+
+    public void ResetRestrictions() { }
 }

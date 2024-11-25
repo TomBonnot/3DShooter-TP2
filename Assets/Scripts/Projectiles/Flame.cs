@@ -7,9 +7,8 @@ public class Flame : Projectile
     Ex: Ce projectile accélère avec le temps à cause du rocket power
     **/
 
-    public Flame(GameObject prefab, float velocity, float lifetime)
+    public Flame(float velocity, float lifetime)
     {
-        this._projectilePrefab = prefab;
         this.velocity = velocity;
         this.projectileLifetime = lifetime;
     }
