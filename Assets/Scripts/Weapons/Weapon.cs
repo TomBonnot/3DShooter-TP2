@@ -12,4 +12,16 @@ public abstract class Weapon
     public GameObject weaponObject;
     public GameObject gunPoint;
     public int ammo;
+
+    public bool expendsAmmo()
+    {
+        // Returns true if shot ammo, false if there is no ammo left
+        Debug.Log("Ammo: " + ammo.ToString());
+        if (ammo > 0)
+        {
+            ammo -= 1;
+            return true;
+        }
+        return false;
+    }
 }
