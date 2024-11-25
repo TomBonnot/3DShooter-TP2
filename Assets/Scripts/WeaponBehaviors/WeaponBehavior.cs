@@ -28,7 +28,6 @@ public class WeaponBehavior : MonoBehaviour
     protected RigidbodyConstraints _originalConstraints;
 
     // Inner logic classes
-    public Projectile projectile;
     public Weapon weapon;
 
     protected void Start()

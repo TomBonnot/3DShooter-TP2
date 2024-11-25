@@ -17,8 +17,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     void Awake()
     {
-        this.projectile = new Flame(_bulletSpeed, _bulletLieftime);
-        this.flamethrower = new Flamethrower(_weaponPrefab, _gunPoint, projectile, _maxAmmo, boostForceVertical, boostForceHorizontal);
+        this.flamethrower = new Flamethrower(_weaponPrefab, _gunPoint, _maxAmmo, boostForceVertical, boostForceHorizontal);
         this.weapon = this.flamethrower;
         playerRB = GameObject.FindWithTag("Player").GetComponent<Rigidbody>();
     }

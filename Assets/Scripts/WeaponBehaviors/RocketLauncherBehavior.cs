@@ -13,8 +13,7 @@ public class RocketLauncherBehavior : WeaponBehavior
 
     void Awake()
     {
-        // this.projectile = new Rocket(_projectilePrefab, _bulletSpeed, _bulletLieftime, explosionStrength);
-        this.weapon = new RocketLauncher(_weaponPrefab, _gunPoint, projectile, _maxAmmo);
+        this.weapon = new RocketLauncher(_weaponPrefab, _gunPoint, _maxAmmo);
     }
 
     public override void Shoot()
