@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,11 +14,14 @@ public class Controller : MonoBehaviour
     private Vector2 _frameInput;
     private bool _playerInputEnable;
     private bool _isGrounded;
-    
+    public bool swinging;
+
     //Every variable about moving, jumping etc...
     [Header("Move Section")]
     [SerializeField] private float _groundCheckDistance = 0.1f;
     [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _maxVelocity;
+
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _rushMoveSpeed;
     private float _tempoMoveSpeed;
@@ -32,8 +36,8 @@ public class Controller : MonoBehaviour
     //Weapon handling variable
     [Header("Shooting Section")]
     [SerializeField] private Transform _handleWeapon;
-    [SerializeField] private Weapon _weapon;
-    [SerializeField] private Weapon _toPickUp;
+    [SerializeField] private WeaponBehavior _weapon;
+    [SerializeField] private WeaponBehavior _toPickUp;
 
     //Input action section, has to be public or can be private with a SerializeField statement
     [Header("Input Section")]
@@ -50,6 +54,7 @@ public class Controller : MonoBehaviour
     private Vector2 _lookInput;
     private Vector3 _localMove = Vector3.zero;
     private Vector3 _moveDirection = Vector3.zero;
+    private float _sqrMaxVelocity;
 
     void Awake()
     {
@@ -76,28 +81,35 @@ public class Controller : MonoBehaviour
     {
         //block and hide the cursor in the middle of the screen
         Cursor.lockState = CursorLockMode.Locked;
+        _sqrMaxVelocity = _maxVelocity * _maxVelocity;
     }
 
     void Update()
     {
         //Pause working, only freezing the inputs. 
-        if(pause.WasPressedThisFrame())
+        if (pause.WasPressedThisFrame())
             _playerInputEnable = !_playerInputEnable;
 
         //If inputs are available, handle every inputs inside
-        if(_playerInputEnable)
+        if (_playerInputEnable)
         {
             _frameInput = move.ReadValue<Vector2>();
-            if(shoot.WasPressedThisFrame() && _weapon != null)
+            if (shoot.WasPressedThisFrame() && _weapon != null)
                 _weapon.Shoot();
-            if(pickup.WasPressedThisFrame())
+            if (shoot.IsPressed() && !shoot.WasPressedThisFrame() && _weapon != null)
+                _weapon.ShootHeld();
+            if (shoot.WasReleasedThisFrame() && _weapon != null)
+                _weapon.ReleaseShoot();
+            if (pickup.WasPressedThisFrame())
                 Pickup(_toPickUp);
-            if(drop.WasPressedThisFrame())
+            if (drop.WasPressedThisFrame())
                 Drop();
-            if(rush.WasPressedThisFrame())
+            if (rush.WasPressedThisFrame())
                 StartCoroutine(Rush());
-            if(rush.WasReleasedThisFrame())
+            if (rush.WasReleasedThisFrame())
                 _moveSpeed = _tempoMoveSpeed;
+            if (jump.WasPressedThisFrame())
+                Jump();
             Look();
         }
 
@@ -111,7 +123,7 @@ public class Controller : MonoBehaviour
     **/
     private IEnumerator Rush()
     {
-        while(_moveSpeed < _rushMoveSpeed)
+        while (_moveSpeed < _rushMoveSpeed)
         {
             _moveSpeed += Time.deltaTime * 2;
             yield return null;
@@ -124,11 +136,13 @@ public class Controller : MonoBehaviour
     **/
     void FixedUpdate()
     {
-        if(_playerInputEnable)
+        if (_playerInputEnable)
         {
             Move();
-            if(jump.WasPressedThisFrame())
-                Jump();
+            if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity)
+            {
+                _rb.linearVelocity = _rb.linearVelocity.normalized * _maxVelocity;
+            }
         }
     }
 
@@ -136,9 +150,9 @@ public class Controller : MonoBehaviour
     *   Method to handle the pickup, setter of the _weapon variable
     *   @parameter Weapon weapon, the weapon variable used to set our main weapon, if null return
     **/
-    private void Pickup(Weapon weapon)
+    private void Pickup(WeaponBehavior weapon)
     {
-        if(weapon == null)
+        if (weapon == null)
             return;
 
         this._weapon = weapon;
@@ -150,7 +164,7 @@ public class Controller : MonoBehaviour
     **/
     private void Drop()
     {
-        if(_weapon == null)
+        if (_weapon == null)
             return;
         _toPickUp = null;
         _weapon.Drop();
@@ -161,8 +175,9 @@ public class Controller : MonoBehaviour
     **/
     private void Jump()
     {
-        if(_isGrounded)
-            _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
+        if (_isGrounded)
+            _rb.AddForce(new Vector3(0, _jumpForce, 0), ForceMode.Impulse);
+        //_rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
     }
 
     /**
@@ -173,9 +188,9 @@ public class Controller : MonoBehaviour
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward * _distancePickUp);
         RaycastHit hit = new RaycastHit();
-        if(Physics.Raycast(ray, out hit, _distancePickUp))
+        if (Physics.Raycast(ray, out hit, _distancePickUp))
         {
-            if(hit.collider.TryGetComponent<Weapon>(out Weapon weapon))
+            if (hit.collider.TryGetComponent<WeaponBehavior>(out WeaponBehavior weapon))
                 _toPickUp = weapon;
             else
                 _toPickUp = null;
@@ -215,7 +230,8 @@ public class Controller : MonoBehaviour
     {
         _moveDirection = new Vector3(_frameInput.x, 0f, _frameInput.y);
         _localMove = transform.TransformDirection(_moveDirection);
-        this._rb.linearVelocity = new Vector3(_localMove.x * _moveSpeed, _rb.linearVelocity.y, _localMove.z * _moveSpeed);
+        _rb.AddForce(new Vector3(_localMove.x * _moveSpeed * Time.deltaTime, 0, _localMove.z * _moveSpeed * Time.deltaTime));
+        // this._rb.linearVelocity = new Vector3(_localMove.x * _moveSpeed, _rb.linearVelocity.y, _localMove.z * _moveSpeed);
     }
 
     /**
@@ -225,8 +241,23 @@ public class Controller : MonoBehaviour
     {
         _isGrounded = false;
         RaycastHit hit = new RaycastHit();
-        if(Physics.Raycast(_col.bounds.center, Vector3.down,out hit, _col.bounds.extents.y + _groundCheckDistance))
-            if(hit.collider.CompareTag("Ground"))
+        if (Physics.Raycast(_col.bounds.center, Vector3.down, out hit, _col.bounds.extents.y + _groundCheckDistance))
+            if (hit.collider.CompareTag("Ground"))
                 _isGrounded = true;
     }
+
+    /**
+    *   Getter of the Rigidbody accessible for the weapons
+    **/
+    public Rigidbody GetRigidbody()
+    {
+        return this._rb;
+    }
+
+    public void setPlayerInputAllowed(bool b)
+    {
+        _playerInputEnable = b;
+    }
+
+    public void ResetRestrictions() { }
 }
