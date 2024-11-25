@@ -296,7 +296,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _groundCheckDistance: 0.1
   _moveSpeed: 5
+  _maxVelocity: 0
   _jumpForce: 10
+  _rushMoveSpeed: 0
   _sensitivity: 0.5
   _yRotationLimit: 70
   _distancePickUp: 2.5
@@ -453,6 +455,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Drop
       m_Flags: 0
+    m_Flags: 0
+  rush:
+    m_Name: Rush
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 3badb3f5-3ee0-44fc-8970-4c9f48c08ad1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
 --- !u!1 &6210969127969027542
 GameObject:
