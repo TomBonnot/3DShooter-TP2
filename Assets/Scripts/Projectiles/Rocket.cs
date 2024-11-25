@@ -8,9 +8,8 @@ public class Rocket : Projectile
     **/
 
     public float explosionStrength { get; protected set; }
-    public Rocket(GameObject prefab, float velocity, float lifetime, float explosionStrength)
+    public Rocket(float velocity, float lifetime, float explosionStrength)
     {
-        this._projectilePrefab = prefab;
         this.velocity = velocity;
         this.projectileLifetime = lifetime;
         this.explosionStrength = explosionStrength;

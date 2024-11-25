@@ -13,14 +13,15 @@ public class RocketLauncherBehavior : WeaponBehavior
 
     void Awake()
     {
-        this.projectile = new Rocket(_projectile, _bulletSpeed, _bulletLieftime, explosionStrength);
+        // this.projectile = new Rocket(_projectilePrefab, _bulletSpeed, _bulletLieftime, explosionStrength);
         this.weapon = new RocketLauncher(_weaponPrefab, _gunPoint, projectile, _maxAmmo);
     }
 
     public override void Shoot()
     {
-        GameObject shotProjectile = Instantiate(projectile._projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
+        GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
         shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
+        Rocket rocket = new Rocket(_bulletSpeed, _bulletLieftime, explosionStrength);
         Destroy(shotProjectile, _bulletLieftime);
     }
 }
