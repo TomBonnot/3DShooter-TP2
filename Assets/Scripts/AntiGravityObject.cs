@@ -2,24 +2,29 @@ using UnityEngine;
 
 public class AntiGravityObject : MonoBehaviour
 {
-    // Gère la physique des objets dont la gravité peut être changé dans Unity
+    // Controls the physics of objects whose gravity can be inverted.
 
-    private Rigidbody _rb;
+    private Rigidbody _rb;    
     private bool _isGravityInverted;
+    private float _gravityForce;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _isGravityInverted = false;
+        _gravityForce = 9.8f;
     }
 
     private void FixedUpdate()
     {
         if (_isGravityInverted)
         {
-            _rb.AddForce(Vector3.up * 9.8f * 2, ForceMode.Acceleration);
+            // Apply an upward force to counteract the default gravity
+            _rb.AddForce(Vector3.up * _gravityForce * 2, ForceMode.Acceleration);
         }
     }
+
+    // Toggles the state of gravity inversion for the object.
     public void ChangeGravity()
     {
         _isGravityInverted = !_isGravityInverted;

@@ -2,47 +2,49 @@ using UnityEngine;
 
 public class AntiGravityPlayer : MonoBehaviour
 {
-    // Gère la physique du joueur lorsque sa gravité est changé dans Unity
+    // Manages the player's physics and behavior when gravity is inverted.
 
     private Rigidbody _rb;
-    
-    //private bool _isRotating;
-    private Quaternion _rotation;
-    private float _flipSpeed;
     private bool _isGravityInverted;
+    private float _gravityForce;
 
-    Controller _controller;
-    public Quaternion BaseRotation { get; private set; }
-    public  bool _isRotating {  get; set; }
+    // Represents the rotation to apply to the player when gravity is inverted or restored.
+    public Quaternion RotationGravity { get; private set; }
+
+    // Indicates whether the player is currently in the process of rotating.
+    public bool IsRotating {  get; set; }
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _isGravityInverted = false;
-        _flipSpeed = 5f;
-        BaseRotation = Quaternion.identity;
+        _gravityForce = 9.8f;
+        RotationGravity = Quaternion.identity;
     }
 
     private void FixedUpdate()
     {
         if (_isGravityInverted)
         {
-            _rb.AddForce(Vector3.up * 9.8f * 2, ForceMode.Acceleration);
+            // Apply an upward force to counteract the default gravity
+            _rb.AddForce(Vector3.up * _gravityForce * 2, ForceMode.Acceleration);
         }
     }
 
+    // Toggles the direction of gravity for the player. 
+    // Updates the player's rotation to ensure they are oriented correctly based on the current gravity direction.
     public void ChangeGravity()
     {
         _isGravityInverted = !_isGravityInverted;
 
         if (_isGravityInverted)
         {
-            BaseRotation = Quaternion.Euler(180f, 0f, 0f);
+            RotationGravity = Quaternion.Euler(180f, 0f, 0f);
         }
         else
         {
-            BaseRotation = Quaternion.identity;
+            RotationGravity = Quaternion.identity;
         }
-        _isRotating = true;
+        IsRotating = true;
     }
 }

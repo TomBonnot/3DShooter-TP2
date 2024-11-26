@@ -216,14 +216,14 @@ public class Controller : MonoBehaviour
 
         // Get the rotation if the gravity is inverted
         AntiGravityPlayer antiGravityPlayer = GetComponent<AntiGravityPlayer>();
-        Quaternion baseRotation = antiGravityPlayer != null ? antiGravityPlayer.BaseRotation : Quaternion.identity;
+        Quaternion baseRotation = antiGravityPlayer != null ? antiGravityPlayer.RotationGravity : Quaternion.identity;
 
         //calculating quaternion on every axis
         var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
         var yQuat = Quaternion.AngleAxis(_rotation.y, Vector3.left);
 
         // If the player is in rotation
-        if (antiGravityPlayer._isRotating)
+        if (antiGravityPlayer.IsRotating)
         {
             //Make the rotation smooth
             transform.localRotation = Quaternion.Lerp(transform.rotation, baseRotation * xQuat, Time.deltaTime * 5f);
@@ -234,7 +234,7 @@ public class Controller : MonoBehaviour
                 //Calculate the orientation with gravity orientation
                 transform.localRotation = baseRotation * xQuat;
                 // The player is no more rotating
-                antiGravityPlayer._isRotating = false; 
+                antiGravityPlayer.IsRotating = false; 
             }
         }
         else
