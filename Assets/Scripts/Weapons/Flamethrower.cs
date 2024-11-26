@@ -29,7 +29,7 @@ public class Flamethrower : Weapon
         if (playerLinearVel.y > 0 || gunPoint.transform.up.y >= 0)
         {
             // player ascending or player facing up - boost normally
-            return _verticalBoostStrength;
+            return -_verticalBoostStrength;
         }
         // If the player is looking straight down - hover without gaining height
         // Otherwise the player will lose height proportionally to how horizontally they are looking
