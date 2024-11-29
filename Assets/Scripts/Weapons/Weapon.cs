@@ -8,7 +8,6 @@ public abstract class Weapon
     Il aura surement très peu de actual code dans ces fichiers
     **/
 
-    public Projectile projectile; // the projectile that will be shot from the weapon
     public GameObject weaponObject;
     public GameObject gunPoint;
     public int ammo;
