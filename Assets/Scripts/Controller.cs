@@ -34,8 +34,10 @@ public class Controller : MonoBehaviour
 
     //Weapon handling variable
     [Header("Shooting Section")]
-    [SerializeField] private Transform _handleWeapon;
-    [SerializeField] private WeaponBehavior _weapon;
+    [SerializeField] private Transform _handleWeaponLeft;
+    [SerializeField] private Transform _handleWeaponRight;
+    [SerializeField] private WeaponBehavior _leftWeapon;
+    [SerializeField] private WeaponBehavior _rightWeapon;
     [SerializeField] private WeaponBehavior _toPickUp;
 
     //Input action section, has to be public or can be private with a SerializeField statement
@@ -44,7 +46,8 @@ public class Controller : MonoBehaviour
     public InputAction look;
     public InputAction pause;
     public InputAction jump;
-    public InputAction shoot;
+    public InputAction shootLeft;
+    public InputAction shootRight;
     public InputAction pickup;
     public InputAction drop;
     public InputAction rush;
@@ -70,7 +73,8 @@ public class Controller : MonoBehaviour
         look.Enable();
         pause.Enable();
         jump.Enable();
-        shoot.Enable();
+        shootLeft.Enable();
+        shootRight.Enable();
         pickup.Enable();
         drop.Enable();
         rush.Enable();
@@ -93,12 +97,8 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             _frameInput = move.ReadValue<Vector2>();
-            if (shoot.WasPressedThisFrame() && _weapon != null)
-                _weapon.Shoot();
-            if (shoot.IsPressed() && !shoot.WasPressedThisFrame() && _weapon != null)
-                _weapon.ShootHeld();
-            if (shoot.WasReleasedThisFrame() && _weapon != null)
-                _weapon.ReleaseShoot();
+            weaponInputs(_leftWeapon, shootLeft);
+            weaponInputs(_rightWeapon, shootRight);
             if (pickup.WasPressedThisFrame())
                 Pickup(_toPickUp);
             if (drop.WasPressedThisFrame())
@@ -115,6 +115,17 @@ public class Controller : MonoBehaviour
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
         CanPickUp();
+    }
+
+    private void weaponInputs(WeaponBehavior weapon, InputAction input)
+    {
+        // Avoid minor code duplication + lets us "disable" a weapon if we ever want
+        if (input.WasPressedThisFrame() && weapon != null)
+            weapon.Shoot();
+        if (input.IsPressed() && !input.WasPressedThisFrame() && weapon != null)
+            weapon.ShootHeld();
+        if (input.WasReleasedThisFrame() && weapon != null)
+            weapon.ReleaseShoot();
     }
 
     /**
@@ -154,8 +165,18 @@ public class Controller : MonoBehaviour
         if (weapon == null)
             return;
 
-        this._weapon = weapon;
-        _weapon.PickUp(_handleWeapon);
+        if (!this._leftWeapon)
+        {
+            this._leftWeapon = weapon;
+            _leftWeapon.PickUp(_handleWeaponLeft);
+            return;
+        }
+        if (!this._rightWeapon)
+        {
+            this._rightWeapon = weapon;
+            _rightWeapon.PickUp(_handleWeaponRight);
+            return;
+        }
     }
 
     /**
@@ -163,10 +184,15 @@ public class Controller : MonoBehaviour
     **/
     private void Drop()
     {
-        if (_weapon == null)
-            return;
+        if (_leftWeapon != null)
+        {
+            _leftWeapon.Drop();
+        }
+        else if (_rightWeapon != null)
+        {
+            _rightWeapon.Drop();
+        }
         _toPickUp = null;
-        _weapon.Drop();
     }
 
     /**
