@@ -109,7 +109,7 @@ public class Controller : MonoBehaviour
                 _moveSpeed = _tempoMoveSpeed;
             if (jump.WasPressedThisFrame())
                 Jump();
-            Look();
+            //Look();
         }
 
         //Methods called on each frame to handle various mechanics 
@@ -149,6 +149,7 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             Move();
+            Look();
             if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity)
             {
                 _rb.linearVelocity = _rb.linearVelocity.normalized * _maxVelocity;
@@ -251,7 +252,7 @@ public class Controller : MonoBehaviour
         if (antiGravityPlayer.IsRotating)
         {
             //Make the rotation smooth
-            transform.localRotation = Quaternion.Lerp(transform.rotation, baseRotation * xQuat, Time.deltaTime * 5f);
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
 
             if (Quaternion.Angle(transform.rotation, baseRotation * xQuat) < 0.1f)
             {
@@ -266,10 +267,10 @@ public class Controller : MonoBehaviour
         {
             //finalising orientation through transform
             //Calculate the orientation with gravity orientation
-            transform.localRotation = baseRotation * xQuat;
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
         }
         //finalising orientation through transform
-        _child.transform.localRotation = yQuat;
+        _child.transform.localRotation = Quaternion.Lerp(_child.transform.localRotation, yQuat, Time.deltaTime * 5f);
     }
 
     /**
