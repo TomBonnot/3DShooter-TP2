@@ -23,7 +23,7 @@ public class GravityLauncherBehavior : WeaponBehavior
         shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
 
         GravityProjectile gravityProjectile = new GravityProjectile(_bulletSpeed, _bulletLieftime, _radiusExplosion, _explosion_prefab);
-        shotProjectile.GetComponent<GravityBehavior>().SetProjectile(gravityProjectile);
+        shotProjectile.GetComponent<GravityProjectileBehavior>().SetProjectile(gravityProjectile);
 
         Destroy(shotProjectile, _bulletLieftime);
     }
