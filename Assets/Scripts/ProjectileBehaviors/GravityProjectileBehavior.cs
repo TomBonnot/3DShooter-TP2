@@ -37,13 +37,6 @@ public class GravityProjectileBehavior : ProjectileBehavior
         }
 
         ParticleSystem _eplosionPrefab = Instantiate(_gravityProjectile._explosion_prefab, _explosionPosition, Quaternion.identity).GetComponent<ParticleSystem>();
-        if(_eplosionPrefab != null)
-        {
-            print("Let's go!");
-        }
-             
-
-
         Destroy(gameObject);
     }
 
