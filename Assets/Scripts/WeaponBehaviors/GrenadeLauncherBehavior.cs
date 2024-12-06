@@ -23,6 +23,7 @@ public class GrenadeLauncherBehavior : WeaponBehavior
     // Manage the shooting behavior of the grnade launcher
     public override void Shoot()
     {
+        // If there is no grenade that's been launched by the grenade launcher
         if (_activeGrenade == null)
         {
             _activeGrenade = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
@@ -31,11 +32,11 @@ public class GrenadeLauncherBehavior : WeaponBehavior
             Grenade _grenade = new Grenade(_bulletSpeed, _bulletLieftime, _radiusExplosion, _explosionForce, _explosion_prefab);
             _activeGrenade.GetComponent<GrenadeBehavior>().SetProjectile(_grenade);
         }
+        // If there is already a grenade that was launched, we make it explode
         else
         {
             _activeGrenade.GetComponent<GrenadeBehavior>().Explode();
             _activeGrenade = null;
         }
-        //Destroy(_activeGrenade, _bulletLieftime);
     }
 }

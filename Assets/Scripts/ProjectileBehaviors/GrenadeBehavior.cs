@@ -14,7 +14,7 @@ public class GrenadeBehavior : ProjectileBehavior
         // Disable the collider otherwise too many other collisions
         this.GetComponent<Collider>().enabled = false;
 
-        // Find every GameObject in the gravity explosion
+        // Find every GameObject in the explosion zone
         Vector3 _explosionPosition = transform.position;
         Collider[] colliders = Physics.OverlapSphere(_explosionPosition, _grenade._radiusExplosion);
 
@@ -24,10 +24,12 @@ public class GrenadeBehavior : ProjectileBehavior
 
             if (_rbHit != null)
             {
+                // Apply explosion force to every objects in the zone
                 _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion);
             }
         }
 
+        ParticleSystem _eplosionPrefab = Instantiate(_grenade._explosion_prefab, _explosionPosition, Quaternion.identity).GetComponent<ParticleSystem>();
         Destroy(gameObject);
     }
 
