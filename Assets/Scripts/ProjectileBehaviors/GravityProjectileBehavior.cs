@@ -1,7 +1,7 @@
 using Tripolygon.UModelerX.Runtime.MessagePack.Resolvers;
 using UnityEngine;
 
-public class GravityBehavior : ProjectileBehavior
+public class GravityProjectileBehavior : ProjectileBehavior
 {
     /** This class manages the behavior of the gravity projectile which reverses the gravity of objects **/
 
