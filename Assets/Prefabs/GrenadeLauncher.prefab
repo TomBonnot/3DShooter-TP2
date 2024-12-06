@@ -182,10 +182,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gunPoint: {fileID: 1826318572843237900}
-  _weaponPrefab: {fileID: 0}
-  _projectilePrefab: {fileID: 0}
-  _bulletSpeed: 70
+  _weaponPrefab: {fileID: 3845287465045388544}
+  _projectilePrefab: {fileID: 668051866751235749, guid: 0c6d2b12dd429624398f4eaf49065873, type: 3}
+  _bulletSpeed: 20
   _bulletLieftime: 3
   _maxAmmo: 0
   _radiusExplosion: 3
-  _explosion_prefab: {fileID: 0}
+  _explosionForce: 500
+  _explosion_prefab: {fileID: 5811022468016898313, guid: 1ab44761efaa65443962c9396a1d731c, type: 3}
