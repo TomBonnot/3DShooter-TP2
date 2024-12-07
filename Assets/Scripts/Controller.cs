@@ -149,6 +149,7 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             Move();
+            //Look();
             if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity)
             {
                 _rb.linearVelocity = _rb.linearVelocity.normalized * _maxVelocity;
@@ -239,12 +240,38 @@ public class Controller : MonoBehaviour
         //Clamp, limit the orientation on Y axis to block reversion possibility
         _rotation.y = Mathf.Clamp(_rotation.y, -_yRotationLimit, _yRotationLimit);
 
+        // Get the rotation if the gravity is inverted
+        AntiGravityPlayer antiGravityPlayer = GetComponent<AntiGravityPlayer>();
+        Quaternion baseRotation = antiGravityPlayer != null ? antiGravityPlayer.RotationGravity : Quaternion.identity;
+
         //calculating quaternion on every axis
         var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
         var yQuat = Quaternion.AngleAxis(_rotation.y, Vector3.left);
 
+        // If the player is in rotation
+        if (antiGravityPlayer.IsRotating)
+        {
+            //Make the rotation smooth
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
+
+            if (Quaternion.Angle(transform.rotation, baseRotation * xQuat) < 0.1f)
+            {
+                //finalising orientation through transform
+                //Calculate the orientation with gravity orientation
+                transform.localRotation = baseRotation * xQuat;
+                // The player is no more rotating
+                antiGravityPlayer.IsRotating = false; 
+            }
+        }
+        else
+        {
+            //finalising orientation through transform
+            //Calculate the orientation with gravity orientation
+            //transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
+            transform.localRotation = baseRotation * xQuat;
+        }
         //finalising orientation through transform
-        transform.localRotation = xQuat;
+        //_child.transform.localRotation = Quaternion.Lerp(_child.transform.localRotation, yQuat, Time.deltaTime * 5f);
         _child.transform.localRotation = yQuat;
     }
 

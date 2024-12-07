@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 6743628277591892390}
   - component: {fileID: 7836958745291104281}
   - component: {fileID: 8688557420443563092}
+  - component: {fileID: 1967037970325387079}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -294,11 +295,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38bdd6936bcabf4c9d852eb2d4978ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  swinging: 0
   _groundCheckDistance: 0.1
-  _moveSpeed: 5
-  _maxVelocity: 0
+  _moveSpeed: 1000
+  _maxVelocity: 50
   _jumpForce: 10
-  _rushMoveSpeed: 0
+  _rushMoveSpeed: 2000
   _sensitivity: 0.5
   _yRotationLimit: 70
   _distancePickUp: 2.5
@@ -465,6 +467,18 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+--- !u!114 &1967037970325387079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129940081276841202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f7967990b69ac45a90027ec7de3e8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6210969127969027542
 GameObject:
   m_ObjectHideFlags: 0
