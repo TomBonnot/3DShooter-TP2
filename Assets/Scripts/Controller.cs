@@ -85,6 +85,8 @@ public class Controller : MonoBehaviour
         //block and hide the cursor in the middle of the screen
         Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
+
+        GameManager.Instance.OnGameOver += DisablePlayerControls;
     }
 
     void Update()
@@ -304,5 +306,15 @@ public class Controller : MonoBehaviour
     public Rigidbody GetRigidbody()
     {
         return this._rb;
+    }
+
+    public void DisablePlayerControls()
+    {
+        _playerInputEnable = !_playerInputEnable;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnGameOver -= DisablePlayerControls;
     }
 }
