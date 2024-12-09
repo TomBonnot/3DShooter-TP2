@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 7836958745291104281}
   - component: {fileID: 8688557420443563092}
   - component: {fileID: 419056920664481383}
+  - component: {fileID: 3607087391379022862}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -301,7 +302,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5129940081276841202}
-  m_Material: {fileID: 13400000, guid: 311571cbbe88e4549bc4bd51e6f52ab3, type: 2}
+  m_Material: {fileID: 13400000, guid: 053583b6e51340142a6ecebdd3c4e729, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -458,6 +459,31 @@ MonoBehaviour:
       m_Processors: 
       m_Groups: 
       m_Action: Shoot
+      m_Flags: 0
+    - m_Name: 
+      m_Id: b9a5c459-5292-4adc-bc87-40d78ef4949f
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Shoot Left
+      m_Flags: 0
+    m_Flags: 0
+  shootRight:
+    m_Name: Shoot Right
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: ccb61152-a54e-4e7c-bb8b-65d8ee0f946d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 9a817f6d-e436-4714-b542-1e6aad3f8e97
+      m_Path: <Mouse>/rightButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Shoot Right
       m_Flags: 0
     m_Flags: 0
   pickup:
@@ -633,6 +659,18 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &3607087391379022862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129940081276841202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f7967990b69ac45a90027ec7de3e8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6210969127969027542
 GameObject:
   m_ObjectHideFlags: 0

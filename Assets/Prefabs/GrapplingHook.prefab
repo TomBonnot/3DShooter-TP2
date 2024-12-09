@@ -99,7 +99,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2bdb0188d843594438d1c681e992e6fe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -183,18 +183,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gunPoint: {fileID: 3146670292479795868}
   _weaponPrefab: {fileID: 5481806681854067734}
-  _projectile: {fileID: 6432604904860974563, guid: 4bf3265d8146d98489390fef8e607275, type: 3}
+  _projectilePrefab: {fileID: 3442049671794490766, guid: 7c30b0ef2b5208944b31e6c4cb7f389c, type: 3}
   _bulletSpeed: 70
   _bulletLieftime: 3
-  _maxAmmo: 0
-  cam: {fileID: 0}
-  gunTip: {fileID: 0}
-  whatIsGrappleable:
-    serializedVersion: 2
-    m_Bits: 0
-  lr: {fileID: 0}
-  maxGrappleDistance: 0
-  grappleDelayTime: 0
-  overshootYAxis: 0
-  grapplingCd: 0
-  grappleKey: 324
+  _maxAmmo: 500
+  _jointMaxDistance: 0.8
+  _jointMinDistance: 0.25
+  _jointSpring: 4.5
+  _jointDamper: 7
+  _jointMassScale: 4.5

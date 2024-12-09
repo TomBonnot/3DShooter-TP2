@@ -42,9 +42,9 @@ GameObject:
   - component: {fileID: 8056982674777030055}
   - component: {fileID: 5015786977531805183}
   - component: {fileID: 492739250766903364}
-  - component: {fileID: 1769468477843236734}
   - component: {fileID: -2837949448865155632}
   - component: {fileID: 510204563993672047}
+  - component: {fileID: 3839242050622662988}
   m_Layer: 0
   m_Name: BasicGun
   m_TagString: Weapon
@@ -99,7 +99,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: ac1279fb6b060d1489a53b94fe1e72d9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,21 +121,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1769468477843236734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5481806681854067734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19e04e6d48ad04941849917955200fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 4133254784876161637, guid: 4bf3265d8146d98489390fef8e607275, type: 3}
-  _gunPoint: {fileID: 3146670292479795868}
-  _bulletSpeed: 70
 --- !u!54 &-2837949448865155632
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -184,3 +169,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &3839242050622662988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5481806681854067734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46c15c2b0b62ee64688af7cd15a19e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gunPoint: {fileID: 3146670292479795868}
+  _weaponPrefab: {fileID: 5481806681854067734}
+  _projectilePrefab: {fileID: 6432604904860974563, guid: 4bf3265d8146d98489390fef8e607275, type: 3}
+  _bulletSpeed: 70
+  _bulletLieftime: 3
+  _maxAmmo: 2147483647
