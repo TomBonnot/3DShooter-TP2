@@ -8,6 +8,5 @@ public abstract class Projectile
     Il aura surement très peu de actual code dans ces fichiers
     **/
     public float velocity { get; protected set; }
-    public GameObject _projectilePrefab { get; protected set; }
     public float projectileLifetime { get; protected set; }
 }

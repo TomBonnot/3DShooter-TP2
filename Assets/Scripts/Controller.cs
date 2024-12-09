@@ -34,8 +34,10 @@ public class Controller : MonoBehaviour
 
     //Weapon handling variable
     [Header("Shooting Section")]
-    [SerializeField] private Transform _handleWeapon;
-    [SerializeField] private WeaponBehavior _weapon;
+    [SerializeField] private Transform _handleWeaponLeft;
+    [SerializeField] private Transform _handleWeaponRight;
+    [SerializeField] private WeaponBehavior _leftWeapon;
+    [SerializeField] private WeaponBehavior _rightWeapon;
     [SerializeField] private WeaponBehavior _toPickUp;
 
     //Input action section, has to be public or can be private with a SerializeField statement
@@ -44,7 +46,8 @@ public class Controller : MonoBehaviour
     public InputAction look;
     public InputAction pause;
     public InputAction jump;
-    public InputAction shoot;
+    public InputAction shootLeft;
+    public InputAction shootRight;
     public InputAction pickup;
     public InputAction drop;
     public InputAction rush;
@@ -70,7 +73,8 @@ public class Controller : MonoBehaviour
         look.Enable();
         pause.Enable();
         jump.Enable();
-        shoot.Enable();
+        shootLeft.Enable();
+        shootRight.Enable();
         pickup.Enable();
         drop.Enable();
         rush.Enable();
@@ -81,6 +85,8 @@ public class Controller : MonoBehaviour
         //block and hide the cursor in the middle of the screen
         Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
+
+        GameManager.Instance.OnGameOver += DisablePlayerControls;
     }
 
     void Update()
@@ -93,12 +99,8 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             _frameInput = move.ReadValue<Vector2>();
-            if (shoot.WasPressedThisFrame() && _weapon != null)
-                _weapon.Shoot();
-            if (shoot.IsPressed() && !shoot.WasPressedThisFrame() && _weapon != null)
-                _weapon.ShootHeld();
-            if (shoot.WasReleasedThisFrame() && _weapon != null)
-                _weapon.ReleaseShoot();
+            weaponInputs(_leftWeapon, shootLeft);
+            weaponInputs(_rightWeapon, shootRight);
             if (pickup.WasPressedThisFrame())
                 Pickup(_toPickUp);
             if (drop.WasPressedThisFrame())
@@ -115,6 +117,17 @@ public class Controller : MonoBehaviour
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
         CanPickUp();
+    }
+
+    private void weaponInputs(WeaponBehavior weapon, InputAction input)
+    {
+        // Avoid minor code duplication + lets us "disable" a weapon if we ever want
+        if (input.WasPressedThisFrame() && weapon != null)
+            weapon.Shoot();
+        if (input.IsPressed() && !input.WasPressedThisFrame() && weapon != null)
+            weapon.ShootHeld();
+        if (input.WasReleasedThisFrame() && weapon != null)
+            weapon.ReleaseShoot();
     }
 
     /**
@@ -138,6 +151,7 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             Move();
+            //Look();
             if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity)
             {
                 _rb.linearVelocity = _rb.linearVelocity.normalized * _maxVelocity;
@@ -154,8 +168,18 @@ public class Controller : MonoBehaviour
         if (weapon == null)
             return;
 
-        this._weapon = weapon;
-        _weapon.PickUp(_handleWeapon);
+        if (!this._leftWeapon)
+        {
+            this._leftWeapon = weapon;
+            _leftWeapon.PickUp(_handleWeaponLeft);
+            return;
+        }
+        if (!this._rightWeapon)
+        {
+            this._rightWeapon = weapon;
+            _rightWeapon.PickUp(_handleWeaponRight);
+            return;
+        }
     }
 
     /**
@@ -163,10 +187,15 @@ public class Controller : MonoBehaviour
     **/
     private void Drop()
     {
-        if (_weapon == null)
-            return;
+        if (_leftWeapon != null)
+        {
+            _leftWeapon.Drop();
+        }
+        else if (_rightWeapon != null)
+        {
+            _rightWeapon.Drop();
+        }
         _toPickUp = null;
-        _weapon.Drop();
     }
 
     /**
@@ -213,12 +242,38 @@ public class Controller : MonoBehaviour
         //Clamp, limit the orientation on Y axis to block reversion possibility
         _rotation.y = Mathf.Clamp(_rotation.y, -_yRotationLimit, _yRotationLimit);
 
+        // Get the rotation if the gravity is inverted
+        AntiGravityPlayer antiGravityPlayer = GetComponent<AntiGravityPlayer>();
+        Quaternion baseRotation = antiGravityPlayer != null ? antiGravityPlayer.RotationGravity : Quaternion.identity;
+
         //calculating quaternion on every axis
         var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
         var yQuat = Quaternion.AngleAxis(_rotation.y, Vector3.left);
 
+        // If the player is in rotation
+        if (antiGravityPlayer.IsRotating)
+        {
+            //Make the rotation smooth
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
+
+            if (Quaternion.Angle(transform.rotation, baseRotation * xQuat) < 0.1f)
+            {
+                //finalising orientation through transform
+                //Calculate the orientation with gravity orientation
+                transform.localRotation = baseRotation * xQuat;
+                // The player is no more rotating
+                antiGravityPlayer.IsRotating = false; 
+            }
+        }
+        else
+        {
+            //finalising orientation through transform
+            //Calculate the orientation with gravity orientation
+            //transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
+            transform.localRotation = baseRotation * xQuat;
+        }
         //finalising orientation through transform
-        transform.localRotation = xQuat;
+        //_child.transform.localRotation = Quaternion.Lerp(_child.transform.localRotation, yQuat, Time.deltaTime * 5f);
         _child.transform.localRotation = yQuat;
     }
 
@@ -251,5 +306,15 @@ public class Controller : MonoBehaviour
     public Rigidbody GetRigidbody()
     {
         return this._rb;
+    }
+
+    public void DisablePlayerControls()
+    {
+        _playerInputEnable = !_playerInputEnable;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnGameOver -= DisablePlayerControls;
     }
 }

@@ -14,8 +14,8 @@ public class WeaponBehavior : MonoBehaviour
     //Main variable visible on editor
     [SerializeField] protected GameObject _gunPoint;
     [SerializeField] protected GameObject _weaponPrefab;
-    [SerializeField] protected GameObject _projectile;
-    [Range(50, 300)][SerializeField] protected float _bulletSpeed = 70f;
+    [SerializeField] protected GameObject _projectilePrefab;
+    [Range(10, 300)][SerializeField] protected float _bulletSpeed = 70f;
     [Range(1, 10)][SerializeField] protected float _bulletLieftime = 3f;
     [SerializeField] protected int _maxAmmo;
     [ContextMenu("Reload")] void resetAmmo() {
@@ -28,7 +28,6 @@ public class WeaponBehavior : MonoBehaviour
     protected RigidbodyConstraints _originalConstraints;
 
     // Inner logic classes
-    public Projectile projectile;
     public Weapon weapon;
 
     protected void Start()

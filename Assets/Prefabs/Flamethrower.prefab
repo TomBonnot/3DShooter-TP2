@@ -42,9 +42,9 @@ GameObject:
   - component: {fileID: 8056982674777030055}
   - component: {fileID: 5015786977531805183}
   - component: {fileID: 492739250766903364}
-  - component: {fileID: 1769468477843236734}
   - component: {fileID: -2837949448865155632}
   - component: {fileID: 510204563993672047}
+  - component: {fileID: 4834343904586609494}
   m_Layer: 0
   m_Name: Flamethrower
   m_TagString: Weapon
@@ -121,24 +121,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1769468477843236734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5481806681854067734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19e04e6d48ad04941849917955200fec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gunPoint: {fileID: 3146670292479795868}
-  _weaponPrefab: {fileID: 0}
-  _projectile: {fileID: 0}
-  _bulletSpeed: 70
-  _bulletLieftime: 3
-  _maxAmmo: 0
 --- !u!54 &-2837949448865155632
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -187,3 +169,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &4834343904586609494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5481806681854067734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd1d29ce282f904429159ddadf86aafc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gunPoint: {fileID: 3146670292479795868}
+  _weaponPrefab: {fileID: 5481806681854067734}
+  _projectilePrefab: {fileID: 8864560493298901349, guid: 725b4fc9367c8d84e9155ca833db44a3, type: 3}
+  _bulletSpeed: 70
+  _bulletLieftime: 3
+  _maxAmmo: 2000
+  boostForceHorizontal: 5
+  boostForceVertical: 1

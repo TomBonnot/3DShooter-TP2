@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.tripolygon.umodeler-x": "file:com.tripolygon.umodeler-x-1.0.2-basic/com.tripolygon.umodeler-x-1.0.2-basic.tgz",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.4",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.ide.rider": "3.0.31",

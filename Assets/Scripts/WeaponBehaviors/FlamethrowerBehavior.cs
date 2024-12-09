@@ -17,15 +17,14 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     void Awake()
     {
-        this.projectile = new Flame(_projectile, _bulletSpeed, _bulletLieftime);
-        this.flamethrower = new Flamethrower(_weaponPrefab, _gunPoint, projectile, _maxAmmo, boostForceVertical, boostForceHorizontal);
+        this.flamethrower = new Flamethrower(_weaponPrefab, _gunPoint, _maxAmmo, boostForceVertical, boostForceHorizontal);
         this.weapon = this.flamethrower;
         playerRB = GameObject.FindWithTag("Player").GetComponent<Rigidbody>();
     }
 
     public override void Shoot()
     {
-        flame = Instantiate(projectile._projectilePrefab, weapon.gunPoint.transform);
+        flame = Instantiate(_projectilePrefab, weapon.gunPoint.transform);
     }
 
     public override void ShootHeld()
