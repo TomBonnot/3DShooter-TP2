@@ -35,7 +35,8 @@ public class Flamethrower : Weapon
         // Otherwise the player will lose height proportionally to how horizontally they are looking
         Debug.Log(gunPoint.transform.up.y + " " + playerLinearVel.y + " " + _verticalBoostStrength + " " + _baseVerticalBoostStrength);
         // Debug.Log(gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength));
-        return (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * _verticalBoostStrength + _baseVerticalBoostStrength));
+        float boostStrength = (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * _verticalBoostStrength) + _baseVerticalBoostStrength);
+        return boostStrength;
     }
 
     public float getHotizontalBoostStrength()

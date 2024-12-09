@@ -224,10 +224,12 @@ public class Controller : MonoBehaviour
         if (_leftWeapon != null)
         {
             _leftWeapon.Drop();
+            _leftWeapon = null;
         }
         else if (_rightWeapon != null)
         {
             _rightWeapon.Drop();
+            _rightWeapon = null;
         }
         _toPickUp = null;
     }
@@ -310,7 +312,7 @@ public class Controller : MonoBehaviour
                 //Calculate the orientation with gravity orientation
                 transform.localRotation = baseRotation * xQuat;
                 // The player is no more rotating
-                antiGravityPlayer.IsRotating = false; 
+                antiGravityPlayer.IsRotating = false;
             }
         }
         else
