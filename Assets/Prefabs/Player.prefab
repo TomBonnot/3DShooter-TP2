@@ -327,7 +327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38bdd6936bcabf4c9d852eb2d4978ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swinging: 0
   _groundCheckDistance: 0.1
   _moveSpeed: 1000
   _maxVelocity: 12
@@ -448,34 +447,17 @@ MonoBehaviour:
     m_Name: Shoot Left
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 5336f44b-d9b2-4d35-93dd-255fb6affa07
+    m_Id: d855d9b8-d900-40d7-aacd-a9dd11425726
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 4c74ff22-6043-46b2-8abb-0394f6c49d7f
+      m_Id: 1521bbb1-d483-4f92-becc-7c8aab2f939b
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Shoot Left
-      m_Flags: 0
-    m_Flags: 0
-  shootRight:
-    m_Name: Shoot Right
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: a0c9ffe0-7310-4294-ac7f-102def85825a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: e0fa650f-ee1a-421c-a41b-b0d8fbf89f7b
-      m_Path: <Mouse>/rightButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Shoot Right
+      m_Action: Shoot
       m_Flags: 0
     m_Flags: 0
   pickup:

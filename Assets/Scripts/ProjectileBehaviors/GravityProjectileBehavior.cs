@@ -22,6 +22,7 @@ public class GravityProjectileBehavior : ProjectileBehavior
         {
             AntiGravityObject _antiGravityObject = hit.GetComponent<AntiGravityObject>();
             AntiGravityPlayer _antiGravityPlayer = hit.GetComponent<AntiGravityPlayer>();
+            AntiGravityEnemy _antiGravityEnemy = hit.GetComponent<AntiGravityEnemy>();
 
             // Check if the GameObject hit is the player or an object whose gravity can be changed
             if (_antiGravityObject != null)
@@ -33,6 +34,10 @@ public class GravityProjectileBehavior : ProjectileBehavior
             {
                 // Change the gravity of the player
                 _antiGravityPlayer.ChangeGravity();
+            }
+            else if(_antiGravityEnemy != null)
+            {
+                _antiGravityEnemy.ChangeGravity();
             }
         }
 
