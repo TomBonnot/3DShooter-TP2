@@ -4,11 +4,11 @@ using UnityEngine.AI;
 public abstract class EnemyBehavior : EntityBehavior
 {
     protected GameObject _player;
-    [SerializeField] protected NavMeshAgent _agent;
-
-    protected void Start()
+    protected bool _playerJustSpotted;
+    protected virtual void Start()
     {
         _player = GameObject.Find("Player");
+        _playerJustSpotted = false;
     }
     protected void OnCollisionEnter(Collision collision)
     {
