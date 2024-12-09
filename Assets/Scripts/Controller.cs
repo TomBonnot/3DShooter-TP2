@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
-using UnityEditor.Callbacks;
+using Unity.VisualScripting;
+//using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,6 +24,8 @@ public class Controller : MonoBehaviour
 
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _rushMoveSpeed;
+    [SerializeField] private float _dodgeSpeed;
+    [Range(0f, 1f)][SerializeField] private float _dodgeTime;
     private float _tempoMoveSpeed;
 
     //Every variable about camera orientation and limitation
@@ -30,7 +33,11 @@ public class Controller : MonoBehaviour
     [Range(0.1f, 9f)][SerializeField] private float _sensitivity = 1f;
     [Range(0f, 90f)][SerializeField] private float _yRotationLimit = 88f;
     [Range(0.3f, 3f)][SerializeField] private float _distancePickUp = 0.5f;
+    [Range(0, 100)][SerializeField] private float dodgeRotationMax = 30f;
     private Vector2 _rotation = Vector2.zero;
+    private float _dodgeRotation = 0f;
+    private int _returnAngle = 0;
+
 
     //Weapon handling variable
     [Header("Shooting Section")]
@@ -51,12 +58,15 @@ public class Controller : MonoBehaviour
     public InputAction pickup;
     public InputAction drop;
     public InputAction rush;
+    public InputAction dodgeRoll;
 
     //Not needed to be visible in the Editor
     private Vector2 _lookInput;
     private Vector3 _localMove = Vector3.zero;
     private Vector3 _moveDirection = Vector3.zero;
+    private Vector3 _dodgeVector = Vector3.zero;
     private float _sqrMaxVelocity;
+    private bool _isDodging = false;
 
     void Awake()
     {
@@ -78,6 +88,7 @@ public class Controller : MonoBehaviour
         pickup.Enable();
         drop.Enable();
         rush.Enable();
+        dodgeRoll.Enable();
     }
 
     void Start()
@@ -109,6 +120,8 @@ public class Controller : MonoBehaviour
                 _moveSpeed = _tempoMoveSpeed;
             if (jump.WasPressedThisFrame())
                 Jump();
+            if (dodgeRoll.WasPressedThisFrame() && !_isDodging)
+                Dodge();
             Look();
         }
 
@@ -146,15 +159,36 @@ public class Controller : MonoBehaviour
     **/
     void FixedUpdate()
     {
-        if (_playerInputEnable)
+        //Debug.Log("Sqr linear velocity: " + _rb.linearVelocity.sqrMagnitude.ToString() + ", Sqr max: " + _sqrMaxVelocity.ToString());
+        Debug.Log("Sqr linear velocity: " + _returnAngle);
+        if (_playerInputEnable && !_isDodging)
         {
             Move();
-            //Look();
-            if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity)
+            if (_rb.linearVelocity.sqrMagnitude > _sqrMaxVelocity && _isGrounded)
             {
                 _rb.linearVelocity = _rb.linearVelocity.normalized * _maxVelocity;
             }
         }
+    }
+
+    private void Dodge()
+    {
+        setLocalMove();
+        if (!_isGrounded || (_localMove.x == 0 && _localMove.z == 0)) return; // Si on est pas par terre ou on bouge pas on dodge pas
+        _isDodging = true;
+        _dodgeVector = new Vector3(_localMove.x, 0, _localMove.z) * Time.deltaTime * _dodgeSpeed * _moveSpeed;
+        _rb.AddForce(_dodgeVector);
+        StartCoroutine(stopDodging(_dodgeTime));
+    }
+
+    private IEnumerator stopDodging(float s)
+    {
+        float savedDodgeRotation = dodgeRotationMax;
+        yield return new WaitForSeconds(s / 2);
+        dodgeRotationMax = 0;
+        yield return new WaitForSeconds(s / 2);
+        _isDodging = false;
+        dodgeRotationMax = savedDodgeRotation;
     }
 
     /**
@@ -233,6 +267,20 @@ public class Controller : MonoBehaviour
         //storing look input value 
         _lookInput = look.ReadValue<Vector2>();
 
+        // Handle camera to show the player dodgerolling
+        // Un peu sale l'idée du returnAngle, c'est pour que tu lerp plus rapidement vers 0
+        if (_isDodging)
+        {
+            _dodgeRotation = Mathf.LerpAngle(_dodgeRotation, dodgeRotationMax, Time.deltaTime * 5);
+            _returnAngle = 3;
+        }
+        else
+        {
+            _dodgeRotation = Mathf.LerpAngle(_dodgeRotation, _returnAngle, Time.deltaTime * 5);
+            if (dodgeRotationMax >= -0.1)
+                _returnAngle = 0;
+        }
+
         //giving the look value into another variable used for calculation
         _rotation.x += _lookInput.x * _sensitivity;
         _rotation.y += _lookInput.y * _sensitivity;
@@ -246,7 +294,7 @@ public class Controller : MonoBehaviour
 
         //calculating quaternion on every axis
         var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
-        var yQuat = Quaternion.AngleAxis(_rotation.y, Vector3.left);
+        var yQuat = Quaternion.AngleAxis(_rotation.y - _dodgeRotation, Vector3.left);
 
         // If the player is in rotation
         if (antiGravityPlayer.IsRotating)
@@ -280,10 +328,15 @@ public class Controller : MonoBehaviour
     **/
     private void Move()
     {
-        _moveDirection = new Vector3(_frameInput.x, 0f, _frameInput.y);
-        _localMove = transform.TransformDirection(_moveDirection);
+        setLocalMove();
         _rb.AddForce(new Vector3(_localMove.x * _moveSpeed * Time.deltaTime, 0, _localMove.z * _moveSpeed * Time.deltaTime));
         // this._rb.linearVelocity = new Vector3(_localMove.x * _moveSpeed, _rb.linearVelocity.y, _localMove.z * _moveSpeed);
+    }
+
+    private void setLocalMove()
+    {
+        _moveDirection = new Vector3(_frameInput.x, 0f, _frameInput.y);
+        _localMove = transform.TransformDirection(_moveDirection);
     }
 
     /**
@@ -304,5 +357,13 @@ public class Controller : MonoBehaviour
     public Rigidbody GetRigidbody()
     {
         return this._rb;
+    }
+
+    /*
+    *   Useful to check during collisions. Lets us deal with I-frames if we ever want
+    */
+    public bool GetIsInvulnerable()
+    {
+        return _isDodging;
     }
 }
