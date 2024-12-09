@@ -6,9 +6,13 @@ public class PlayerBehavior : EntityBehavior
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            GameManager.Instance.GameOver();
-            //Destroy(gameObject);
+            Die();
         }
     }
-    
+
+    protected override void Die()
+    {
+        GameManager.Instance.GameOver();
+    }
+
 }
