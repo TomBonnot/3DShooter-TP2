@@ -11,7 +11,7 @@ public class GrapplingBehavior : WeaponBehavior
     [Header("References")]
     private LineRenderer _lr;
     private GameObject _player;
-    private Controller _playerController;
+    //private Controller _playerController;
 
     [Header("Swinging")]
     private Vector3 _swingPoint;
@@ -44,7 +44,7 @@ public class GrapplingBehavior : WeaponBehavior
         if (!weapon.expendsAmmo()) return;
         // On instantie en world space pour pas que le grapple bouge avec nous
         _shotGrapple = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, Quaternion.identity);
-        _shotGrapple.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
+        _shotGrapple.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.forward * _bulletSpeed;
         _shotGrappleBehavior = _shotGrapple.GetComponent<GrappleBehavior>();
         _shotGrappleBehavior.setGrappleEvent(onHook);
         // On active le line renderer
