@@ -3,7 +3,12 @@ guid: 288fa01aff64ef846a9bcf2c98f1f1ad
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PipeStraightMat
+    second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
