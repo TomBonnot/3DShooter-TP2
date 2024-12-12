@@ -9,13 +9,8 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: GearMat
     second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: modelPanel4ViewSelectedSet_GearMat
-    second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
   materials:
-    materialImportMode: 1
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1
