@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public event Action OnGameOver;
+    private string _selectedLevel;
 
     private void Awake()
     {
@@ -34,5 +35,15 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
+    }
+
+    public void LoadScene(string _sceneName)
+    {
+        SceneManager.LoadScene(_sceneName);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

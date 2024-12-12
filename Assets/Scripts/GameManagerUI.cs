@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManagerUI : MonoBehaviour
@@ -9,9 +10,22 @@ public class GameManagerUI : MonoBehaviour
     managing interactions like retrying the level.
    **/
 
-
+    public static GameManagerUI Instance { get; private set; }
     private GameManager _gameManager;
     [SerializeField] private GameObject _deadPanel;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
