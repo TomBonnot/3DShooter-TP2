@@ -10,22 +10,10 @@ public class GameManagerUI : MonoBehaviour
     managing interactions like retrying the level.
    **/
 
-    public static GameManagerUI Instance { get; private set; }
     private GameManager _gameManager;
     [SerializeField] private GameObject _deadPanel;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _optionMenu;
 
     private void Start()
     {
@@ -33,6 +21,7 @@ public class GameManagerUI : MonoBehaviour
 
         // Subscribe to the OnGameOver event to activate the death panel
         _gameManager.OnGameOver += ActiveDeadPanel;
+        _gameManager.OnGamePaused += DisplayPauseMenu;
     }
 
     // Displays the panel with the score and the retry button
@@ -41,15 +30,18 @@ public class GameManagerUI : MonoBehaviour
         _deadPanel.SetActive(true);
     }
 
-    // Method called when the "Retry" button is clicked
-    public void RetryButton()
+    private void DisplayPauseMenu(bool _state)
     {
-        _gameManager.RestartLevel();
+        _pauseMenu.SetActive(_state);
+        _optionMenu.SetActive(_state);        
     }
 
     private void OnDisable()
     {
         _gameManager.OnGameOver -= ActiveDeadPanel;
+        _gameManager.OnGamePaused -= DisplayPauseMenu;
     }
+
+
 
 }

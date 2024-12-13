@@ -104,7 +104,10 @@ public class Controller : MonoBehaviour
     {
         //Pause working, only freezing the inputs. 
         if (pause.WasPressedThisFrame())
+        {
             _playerInputEnable = !_playerInputEnable;
+            GameManager.Instance.PauseGame();
+        }        
 
         //If inputs are available, handle every inputs inside
         if (_playerInputEnable)
@@ -162,7 +165,7 @@ public class Controller : MonoBehaviour
     void FixedUpdate()
     {
         //Debug.Log("Sqr linear velocity: " + _rb.linearVelocity.sqrMagnitude.ToString() + ", Sqr max: " + _sqrMaxVelocity.ToString());
-        Debug.Log("Sqr linear velocity: " + _returnAngle);
+        //Debug.Log("Sqr linear velocity: " + _returnAngle);
         if (_playerInputEnable && !_isDodging)
         {
             Move();
