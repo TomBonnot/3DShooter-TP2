@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4a00d74dc8e03e64d81ca4f090e67742
+guid: 08195281031b41a48a05439ae6e5b0b7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,7 +7,7 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Box_group1Mat
+      name: pPlane1Mat
     second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
   materials:
     materialImportMode: 2
@@ -38,7 +38,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.65
+    globalScale: 7
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -93,7 +93,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.65
+    globalScale: 7
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

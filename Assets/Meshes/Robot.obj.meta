@@ -22,7 +22,12 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Robot_Nail_ShooterMat
+      name: Robot_Nail_ShooterLMat
+    second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Robot_Nail_ShooterRMat
     second: {fileID: 2100000, guid: bc9b28f181f0d724da355dbb42760729, type: 2}
   - first:
       type: UnityEngine:Material
