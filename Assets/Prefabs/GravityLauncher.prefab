@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3964399201419813873}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1.39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3040525764854501795}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &7036352499479473209
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,5 +187,6 @@ MonoBehaviour:
   _bulletSpeed: 50
   _bulletLieftime: 3
   _maxAmmo: 999
+  isEquipped: 0
   _radiusExplosion: 3
   _explosion_prefab: {fileID: 7839951714248324183, guid: 5e79239121867cf40b074a0c15491b8d, type: 3}

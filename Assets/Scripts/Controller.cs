@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime;
 using Unity.VisualScripting;
 //using UnityEditor.Callbacks;
 using UnityEngine;
@@ -28,15 +29,8 @@ public class Controller : MonoBehaviour
     [Range(0f, 1f)][SerializeField] private float _dodgeTime;
     private float _tempoMoveSpeed;
 
-    //Every variable about camera orientation and limitation
-    [Header("Camera Section")]
-    [Range(0.1f, 9f)][SerializeField] private float _sensitivity = 1f;
-    [Range(0f, 90f)][SerializeField] private float _yRotationLimit = 88f;
+    //0 References mais je le garde, la mecanique de pickup sera pas la même
     [Range(0.3f, 3f)][SerializeField] private float _distancePickUp = 0.5f;
-    [Range(0, 100)][SerializeField] private float dodgeRotationMax = 30f;
-    private Vector2 _rotation = Vector2.zero;
-    private float _dodgeRotation = 0f;
-    private int _returnAngle = 0;
 
 
     //Weapon handling variable
@@ -45,7 +39,7 @@ public class Controller : MonoBehaviour
     [SerializeField] private Transform _handleWeaponRight;
     [SerializeField] private WeaponBehavior _leftWeapon;
     [SerializeField] private WeaponBehavior _rightWeapon;
-    [SerializeField] private WeaponBehavior _toPickUp;
+    [SerializeField] private GameObject _basicWeaponPrefab;
 
     //Input action section, has to be public or can be private with a SerializeField statement
     [Header("Input Section")]
@@ -61,12 +55,15 @@ public class Controller : MonoBehaviour
     public InputAction dodgeRoll;
 
     //Not needed to be visible in the Editor
-    private Vector2 _lookInput;
     private Vector3 _localMove = Vector3.zero;
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _dodgeVector = Vector3.zero;
     private float _sqrMaxVelocity;
     private bool _isDodging = false;
+    private Targeted targeted;
+
+    private bool _isHoldingBasicLeft;
+    private bool _isHoldingBasicRight;
 
     void Awake()
     {
@@ -77,6 +74,13 @@ public class Controller : MonoBehaviour
         _camera = this.GetComponentInChildren<Camera>();
         _playerInputEnable = true;
         _tempoMoveSpeed = _moveSpeed;
+        targeted = new Targeted();
+        targeted.target = this.gameObject;
+        targeted.targetPoint = Vector3.zero;
+
+        // On commence avec deux guns standards
+        equipBasicWeapon();
+        equipBasicWeapon();
 
         //Activating every input
         move.Enable();
@@ -91,17 +95,27 @@ public class Controller : MonoBehaviour
         dodgeRoll.Enable();
     }
 
+    private void equipBasicWeapon()
+    {
+        // Crée un basic weapon et equip le
+        WeaponBehavior basicWeapon = Instantiate(_basicWeaponPrefab).GetComponent<WeaponBehavior>();
+        Pickup(true, basicWeapon);
+    }
+
     void Start()
     {
         //block and hide the cursor in the middle of the screen
-        Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
 
         GameManager.Instance.OnGameOver += DisablePlayerControls;
     }
 
+
     void Update()
     {
+        // Get where the player is aiming
+        getHovered();
         //Pause working, only freezing the inputs. 
         if (pause.WasPressedThisFrame())
             _playerInputEnable = !_playerInputEnable;
@@ -110,10 +124,10 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             _frameInput = move.ReadValue<Vector2>();
-            weaponInputs(_leftWeapon, shootLeft);
-            weaponInputs(_rightWeapon, shootRight);
+            clickInputs(_leftWeapon, shootLeft);
+            clickInputs(_rightWeapon, shootRight);
             if (pickup.WasPressedThisFrame())
-                Pickup(_toPickUp);
+                Pickup(false);
             if (drop.WasPressedThisFrame())
                 Drop();
             if (rush.WasPressedThisFrame())
@@ -124,15 +138,13 @@ public class Controller : MonoBehaviour
                 Jump();
             if (dodgeRoll.WasPressedThisFrame() && !_isDodging)
                 Dodge();
-            Look();
         }
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
-        CanPickUp();
     }
 
-    private void weaponInputs(WeaponBehavior weapon, InputAction input)
+    private void clickInputs(WeaponBehavior weapon, InputAction input)
     {
         // Avoid minor code duplication + lets us "disable" a weapon if we ever want
         if (input.WasPressedThisFrame() && weapon != null)
@@ -141,6 +153,22 @@ public class Controller : MonoBehaviour
             weapon.ShootHeld();
         if (input.WasReleasedThisFrame() && weapon != null)
             weapon.ReleaseShoot();
+    }
+
+    private void getHovered()
+    {
+        // Stores the game object that is being targeted as well as the position of the pointed point (?) into Targeted.
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        // Create a ray from the camera through the mouse position
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+        // Perform a raycast
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            targeted.target = hit.collider.gameObject;
+            targeted.targetPoint = hit.point;
+        }
     }
 
     /**
@@ -161,8 +189,6 @@ public class Controller : MonoBehaviour
     **/
     void FixedUpdate()
     {
-        //Debug.Log("Sqr linear velocity: " + _rb.linearVelocity.sqrMagnitude.ToString() + ", Sqr max: " + _sqrMaxVelocity.ToString());
-        Debug.Log("Sqr linear velocity: " + _returnAngle);
         if (_playerInputEnable && !_isDodging)
         {
             Move();
@@ -185,34 +211,43 @@ public class Controller : MonoBehaviour
 
     private IEnumerator stopDodging(float s)
     {
-        float savedDodgeRotation = dodgeRotationMax;
+        //float savedDodgeRotation = dodgeRotationMax;
         yield return new WaitForSeconds(s / 2);
-        dodgeRotationMax = 0;
+        //dodgeRotationMax = 0;
         yield return new WaitForSeconds(s / 2);
         _isDodging = false;
-        dodgeRotationMax = savedDodgeRotation;
+        //dodgeRotationMax = savedDodgeRotation;
     }
 
     /**
     *   Method to handle the pickup, setter of the _weapon variable
-    *   @parameter Weapon weapon, the weapon variable used to set our main weapon, if null return
+    *   @parameter Weapon weapon, the weapon variable used to set our main weapon.
+        @parameter isBasic, wether or not the weapon being equipped is a "basic" one.
     **/
-    private void Pickup(WeaponBehavior weapon)
+    private void Pickup(bool isBasic, WeaponBehavior weaponBehavior = null)
     {
-        if (weapon == null)
-            return;
+        // if we are not looking at a weapon AND we are not forcing a weapon equip
+        if (!targeted.target.CompareTag(Tags.WEAPON) && weaponBehavior == null) return;
 
-        if (!this._leftWeapon)
+        // Si on regarde pas un weapon ou on en set pas un explicitement
+        if (weaponBehavior == null)
+            weaponBehavior = targeted.target.GetComponent<WeaponBehavior>();
+
+        // This part of the method is to change if we let the player choose which arm to equip their weapon.
+        // Has no impact on gameplay, alors jme suis pas cassé la tête.
+        if (!this._leftWeapon || (_isHoldingBasicLeft && !isBasic)) // Si tu as RIEN de equip (même pas un basicWeapon) OU tu tiens un basic gun et ne compte pas le remplacer par un autre basic gun
         {
-            this._leftWeapon = weapon;
-            _leftWeapon.PickUp(_handleWeaponLeft);
-            return;
+            this._leftWeapon?.Drop(_isHoldingBasicLeft);
+            _isHoldingBasicLeft = isBasic;
+            this._leftWeapon = weaponBehavior;
+            this._leftWeapon.PickUp(_handleWeaponLeft);
         }
-        if (!this._rightWeapon)
+        else if (!this._rightWeapon || (_isHoldingBasicRight && !isBasic))
         {
-            this._rightWeapon = weapon;
-            _rightWeapon.PickUp(_handleWeaponRight);
-            return;
+            this._rightWeapon?.Drop(_isHoldingBasicRight);
+            _isHoldingBasicRight = isBasic;
+            this._rightWeapon = weaponBehavior;
+            this._rightWeapon.PickUp(_handleWeaponRight);
         }
     }
 
@@ -221,17 +256,24 @@ public class Controller : MonoBehaviour
     **/
     private void Drop()
     {
-        if (_leftWeapon != null)
+        // Pourquoi au lieu de ça je peux pas juste drop ensuite call la méthode Pickup avec un nouveau basic weapon?
+        // Je sais pas, alors on a un peu de code duplication
+        if (!_isHoldingBasicLeft)
         {
-            _leftWeapon.Drop();
-            _leftWeapon = null;
+            WeaponBehavior basicWeapon = Instantiate(_basicWeaponPrefab).GetComponent<WeaponBehavior>();
+            this._leftWeapon?.Drop(_isHoldingBasicLeft);
+            _isHoldingBasicLeft = true;
+            this._leftWeapon = basicWeapon;
+            this._leftWeapon.PickUp(_handleWeaponLeft);
         }
-        else if (_rightWeapon != null)
+        else if (!_isHoldingBasicRight)
         {
-            _rightWeapon.Drop();
-            _rightWeapon = null;
+            WeaponBehavior basicWeapon = Instantiate(_basicWeaponPrefab).GetComponent<WeaponBehavior>();
+            this._rightWeapon?.Drop(_isHoldingBasicRight);
+            _isHoldingBasicRight = true;
+            this._rightWeapon = basicWeapon;
+            this._rightWeapon.PickUp(_handleWeaponRight);
         }
-        _toPickUp = null;
     }
 
     /**
@@ -245,96 +287,12 @@ public class Controller : MonoBehaviour
     }
 
     /**
-    *   Method that load a raycast from the camera's pivot, along its Z axis and ending at _distancePickUp. 
-    *   When a weapon is detected, _toPickUp handle the weapon and it can be picked up with PickUp(weapon)
-    **/
-    private void CanPickUp()
-    {
-        Ray ray = new Ray(_camera.transform.position, _camera.transform.forward * _distancePickUp);
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(ray, out hit, _distancePickUp))
-        {
-            if (hit.collider.TryGetComponent<WeaponBehavior>(out WeaponBehavior weapon))
-                _toPickUp = weapon;
-            else
-                _toPickUp = null;
-        }
-        else
-            _toPickUp = null;
-    }
-
-    /**
-    *   Method to handle the camera orientation along look input.
-    **/
-    void Look()
-    {
-        //storing look input value 
-        _lookInput = look.ReadValue<Vector2>();
-
-        // Handle camera to show the player dodgerolling
-        // Un peu sale l'idée du returnAngle, c'est pour que tu lerp plus rapidement vers 0
-        if (_isDodging)
-        {
-            _dodgeRotation = Mathf.LerpAngle(_dodgeRotation, dodgeRotationMax, Time.deltaTime * 5);
-            _returnAngle = 3;
-        }
-        else
-        {
-            _dodgeRotation = Mathf.LerpAngle(_dodgeRotation, _returnAngle, Time.deltaTime * 5);
-            if (dodgeRotationMax >= -0.1)
-                _returnAngle = 0;
-        }
-
-        //giving the look value into another variable used for calculation
-        _rotation.x += _lookInput.x * _sensitivity;
-        _rotation.y += _lookInput.y * _sensitivity;
-
-        //Clamp, limit the orientation on Y axis to block reversion possibility
-        _rotation.y = Mathf.Clamp(_rotation.y, -_yRotationLimit, _yRotationLimit);
-
-        // Get the rotation if the gravity is inverted
-        AntiGravityPlayer antiGravityPlayer = GetComponent<AntiGravityPlayer>();
-        Quaternion baseRotation = antiGravityPlayer != null ? antiGravityPlayer.RotationGravity : Quaternion.identity;
-
-        //calculating quaternion on every axis
-        var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
-        var yQuat = Quaternion.AngleAxis(_rotation.y - _dodgeRotation, Vector3.left);
-
-        // If the player is in rotation
-        if (antiGravityPlayer.IsRotating)
-        {
-            //Make the rotation smooth
-            transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
-
-            if (Quaternion.Angle(transform.rotation, baseRotation * xQuat) < 0.1f)
-            {
-                //finalising orientation through transform
-                //Calculate the orientation with gravity orientation
-                transform.localRotation = baseRotation * xQuat;
-                // The player is no more rotating
-                antiGravityPlayer.IsRotating = false;
-            }
-        }
-        else
-        {
-            //finalising orientation through transform
-            //Calculate the orientation with gravity orientation
-            //transform.localRotation = Quaternion.Lerp(transform.localRotation, baseRotation * xQuat, Time.deltaTime * 5f);
-            transform.localRotation = baseRotation * xQuat;
-        }
-        //finalising orientation through transform
-        //_child.transform.localRotation = Quaternion.Lerp(_child.transform.localRotation, yQuat, Time.deltaTime * 5f);
-        _child.transform.localRotation = yQuat;
-    }
-
-    /**
     *   Simple method to handle the basic movement
     **/
     private void Move()
     {
         setLocalMove();
         _rb.AddForce(new Vector3(_localMove.x * _moveSpeed * Time.deltaTime, 0, _localMove.z * _moveSpeed * Time.deltaTime));
-        // this._rb.linearVelocity = new Vector3(_localMove.x * _moveSpeed, _rb.linearVelocity.y, _localMove.z * _moveSpeed);
     }
 
     private void setLocalMove()
@@ -379,5 +337,10 @@ public class Controller : MonoBehaviour
     public bool GetIsInvulnerable()
     {
         return _isDodging;
+    }
+
+    public Targeted getTargeted()
+    {
+        return targeted;
     }
 }
