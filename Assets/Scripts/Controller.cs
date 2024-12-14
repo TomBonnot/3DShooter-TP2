@@ -59,6 +59,7 @@ public class Controller : MonoBehaviour
     public InputAction drop;
     public InputAction rush;
     public InputAction dodgeRoll;
+    public InputAction restartLevel;
 
     //Not needed to be visible in the Editor
     private Vector2 _lookInput;
@@ -89,6 +90,7 @@ public class Controller : MonoBehaviour
         drop.Enable();
         rush.Enable();
         dodgeRoll.Enable();
+        restartLevel.Enable();
     }
 
     void Start()
@@ -97,7 +99,8 @@ public class Controller : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
 
-        GameManager.Instance.OnGameOver += DisablePlayerControls;
+        GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
+        GameManager.Instance.OnEnableDisableControllerPlayer += EnableDisablePlayerControls;
     }
 
     void Update()
@@ -107,7 +110,7 @@ public class Controller : MonoBehaviour
         {
             _playerInputEnable = !_playerInputEnable;
             GameManager.Instance.PauseGame();
-        }        
+        }
 
         //If inputs are available, handle every inputs inside
         if (_playerInputEnable)
@@ -127,6 +130,14 @@ public class Controller : MonoBehaviour
                 Jump();
             if (dodgeRoll.WasPressedThisFrame() && !_isDodging)
                 Dodge();
+            if (restartLevel.WasPressedThisFrame())
+            {
+                print("TEST");
+                GameManager.Instance.RestartLevel();
+            }
+                
+
+
             Look();
         }
 
@@ -366,14 +377,15 @@ public class Controller : MonoBehaviour
         return this._rb;
     }
 
-    public void DisablePlayerControls()
+    public void EnableDisablePlayerControls()
     {
         _playerInputEnable = !_playerInputEnable;
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.OnGameOver -= DisablePlayerControls;
+        GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
+        GameManager.Instance.OnEnableDisableControllerPlayer -= EnableDisablePlayerControls;
     }
 
     /*

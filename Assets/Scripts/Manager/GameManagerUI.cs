@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ public class GameManagerUI : MonoBehaviour
     [SerializeField] private GameObject _deadPanel;
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _optionMenu;
+    [SerializeField] private TMP_Text _timer;
 
     private void Start()
     {
@@ -22,6 +24,7 @@ public class GameManagerUI : MonoBehaviour
         // Subscribe to the OnGameOver event to activate the death panel
         _gameManager.OnGameOver += ActiveDeadPanel;
         _gameManager.OnGamePaused += DisplayPauseMenu;
+        _gameManager.OnStartTimer += UpdateTimer;
     }
 
     // Displays the panel with the score and the retry button
@@ -36,12 +39,14 @@ public class GameManagerUI : MonoBehaviour
         _optionMenu.SetActive(_state);        
     }
 
+    private void UpdateTimer(string _time)
+    {
+        _timer.text = _time;
+    }
+
     private void OnDisable()
     {
         _gameManager.OnGameOver -= ActiveDeadPanel;
         _gameManager.OnGamePaused -= DisplayPauseMenu;
     }
-
-
-
 }
