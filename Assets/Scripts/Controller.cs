@@ -99,7 +99,7 @@ public class Controller : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
 
-        GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
+        //GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
         GameManager.Instance.OnEnableDisableControllerPlayer += EnableDisablePlayerControls;
     }
 
@@ -108,7 +108,7 @@ public class Controller : MonoBehaviour
         //Pause working, only freezing the inputs. 
         if (pause.WasPressedThisFrame())
         {
-            _playerInputEnable = !_playerInputEnable;
+            EnableDisablePlayerControls();
             GameManager.Instance.PauseGame();
         }
 
@@ -132,7 +132,6 @@ public class Controller : MonoBehaviour
                 Dodge();
             if (restartLevel.WasPressedThisFrame())
             {
-                print("TEST");
                 GameManager.Instance.RestartLevel();
             }
                 
@@ -384,7 +383,7 @@ public class Controller : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
+        //GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
         GameManager.Instance.OnEnableDisableControllerPlayer -= EnableDisablePlayerControls;
     }
 

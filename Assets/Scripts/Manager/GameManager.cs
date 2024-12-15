@@ -10,13 +10,15 @@ public class GameManager : MonoBehaviour
     public event Action<bool> OnGamePaused;
     public event Action OnEnableDisableControllerPlayer;
     public event Action OnStartCountDown;
-    public event Action<string> OnStartTimer;
+    public event Action<string> OnUpdateTimer;
+    public event Action OnReloadLevel;
+
     private GameObject player;
 
-    private bool _isRestarting;
     private bool _isGamePaused;
     private bool _isPlaying;
     private bool _firstTime;
+    private bool _isDead;
     private float _elapsedTime;
 
     private TimeSpan _timePlaying;
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        _isRestarting = false;
+        _isDead = false;
         _isGamePaused = false;
         _isPlaying = false;
         _firstTime = true;
@@ -51,13 +53,6 @@ public class GameManager : MonoBehaviour
             _elapsedTime = 0f;
             OnEnableDisableControllerPlayer?.Invoke();
             OnStartCountDown?.Invoke();
-            _firstTime = false;
-        }
-        else if(IsPlayerInScene())
-        {
-            _elapsedTime = 0f;
-            _isPlaying = true;
-            Playing();
         }
     }
 
@@ -65,6 +60,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         _isPlaying = false;
+        _isDead = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnGameOver?.Invoke();
@@ -74,9 +70,11 @@ public class GameManager : MonoBehaviour
     // Restart the current level
     public void RestartLevel()
     {
-        //Debug.Log("RestartLevel called at: " + Time.time);
-        //Time.timeScale = 1f;
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        OnEnableDisableControllerPlayer?.Invoke();
+        Time.timeScale = 1f;
+        OnReloadLevel?.Invoke();
+        BeginGame();
+        _elapsedTime = 0f;
     }
 
     // Load the scene
@@ -84,6 +82,7 @@ public class GameManager : MonoBehaviour
     {
         if(Instance == this)
         {
+            Time.timeScale = 1f;
             SceneManager.LoadScene(_sceneName);
         }
         
@@ -99,16 +98,30 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         _isGamePaused = !_isGamePaused;
-        _isPlaying = _isGamePaused;
+
+        // Only change _isPlaying if BeginGame() has been called (when _firstTime is false)
+        if (!_firstTime)
+        {
+            _isPlaying = !_isGamePaused;
+        }
+
         if (_isGamePaused)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            Time.timeScale = 0f;
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            Time.timeScale = 1f;
+
+            // Only call Playing() if BeginGame() has been called
+            if (!_firstTime)
+            {
+                Playing();
+            }
         }
         OnGamePaused?.Invoke(_isGamePaused);
     }
@@ -125,6 +138,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginGame()
     {
+        _firstTime = false;
         OnEnableDisableControllerPlayer?.Invoke();
         _isPlaying = true;
         StartCoroutine(UpdateTimer());
@@ -141,7 +155,7 @@ public class GameManager : MonoBehaviour
         {
             _elapsedTime += Time.deltaTime;
             _timePlaying = TimeSpan.FromSeconds(_elapsedTime);
-            OnStartTimer?.Invoke(_timePlaying.ToString("mm':'ss'.'ff"));
+            OnUpdateTimer?.Invoke(_timePlaying.ToString("mm':'ss'.'ff"));
             yield return null;
         }
     }
@@ -150,7 +164,6 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        print("Let's Go!");
         CheckForPlayer();
     }
 

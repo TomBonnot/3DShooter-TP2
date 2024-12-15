@@ -24,13 +24,19 @@ public class GameManagerUI : MonoBehaviour
         // Subscribe to the OnGameOver event to activate the death panel
         _gameManager.OnGameOver += ActiveDeadPanel;
         _gameManager.OnGamePaused += DisplayPauseMenu;
-        _gameManager.OnStartTimer += UpdateTimer;
+        _gameManager.OnUpdateTimer += UpdateTimer;
+        _gameManager.OnReloadLevel += CloseDeadPanel;
     }
 
     // Displays the panel with the score and the retry button
     private void ActiveDeadPanel()
     {
-        _deadPanel.SetActive(true);
+        _deadPanel.SetActive(true);        
+        
+    }
+    private void CloseDeadPanel()
+    {
+        _deadPanel.SetActive(false);
     }
 
     private void DisplayPauseMenu(bool _state)
