@@ -37,6 +37,7 @@ public class Controller : MonoBehaviour
     private Vector2 _rotation = Vector2.zero;
     private float _dodgeRotation = 0f;
     private int _returnAngle = 0;
+    private bool _resetCameraRotation = false;
 
 
     //Weapon handling variable
@@ -276,11 +277,26 @@ public class Controller : MonoBehaviour
             _toPickUp = null;
     }
 
+    public void ResetCameraRotation()
+    {
+        // Marquer pour réinitialisation complète
+        _resetCameraRotation = true;
+    }
+
+
     /**
     *   Method to handle the camera orientation along look input.
     **/
     void Look()
     {
+        if (_resetCameraRotation)
+        {
+            // Reset the camera rotation
+            _rotation = Vector2.zero;
+            _child.transform.localRotation = Quaternion.identity;
+            _resetCameraRotation = false;
+            return;
+        }
         //storing look input value 
         _lookInput = look.ReadValue<Vector2>();
 

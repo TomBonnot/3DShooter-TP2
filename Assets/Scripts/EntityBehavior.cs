@@ -47,6 +47,12 @@ public abstract class EntityBehavior : MonoBehaviour
             child.localPosition = localPosition;
             child.localRotation = localRotation;
         }
+
+        Controller controller = GetComponent<Controller>();
+        if (controller != null)
+        {
+            controller.ResetCameraRotation();
+        }
     }
 
     protected virtual void Die()
