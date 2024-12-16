@@ -31,6 +31,17 @@ public abstract class EnemyBehavior : EntityBehavior
         return false;
     }
 
+    public void EnemyKilled()
+    {
+        Die();
+    }
+
+    protected override void Die()
+    {
+        GameManager.Instance.RegisterEnemyKill();
+        base.Die();
+    }
+
     protected abstract void AttackPlayer();
 
 }

@@ -16,6 +16,7 @@ public class GameManagerUI : MonoBehaviour
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _optionMenu;
     [SerializeField] private TMP_Text _timer;
+    [SerializeField] private TMP_Text _score;
 
     private void Start()
     {
@@ -26,6 +27,12 @@ public class GameManagerUI : MonoBehaviour
         _gameManager.OnGamePaused += DisplayPauseMenu;
         _gameManager.OnUpdateTimer += UpdateTimer;
         _gameManager.OnReloadLevel += CloseDeadPanel;
+        _gameManager.OnScoreUpdated += UpdateScore;
+    }
+
+    private void UpdateScore(int _totalScore)
+    {
+        _score.text = "Score : " + _totalScore;
     }
 
     // Displays the panel with the score and the retry button

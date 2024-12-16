@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public event Action OnStartCountDown;
     public event Action<string> OnUpdateTimer;
     public event Action OnReloadLevel;
+    public event Action<int> OnScoreUpdated;
+    public event Action OnReloadEnemies;
 
     private GameObject player;
 
@@ -20,9 +22,12 @@ public class GameManager : MonoBehaviour
     private bool _firstTime;
     private bool _isDead;
     private float _elapsedTime;
-
     private TimeSpan _timePlaying;
-    
+
+    [Header("Score")]
+    private int _playerKills;
+    private int _totalScore;
+
 
     private void Awake()
     {
@@ -41,6 +46,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        _playerKills = 0;
+        _totalScore = 0;
         _isDead = false;
         _isGamePaused = false;
         _isPlaying = false;
@@ -64,12 +71,17 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnGameOver?.Invoke();
+        CalculateScore();
         Time.timeScale = 0f;
     }
 
     // Restart the current level
     public void RestartLevel()
     {
+        _playerKills = 0;
+        _totalScore = 0;
+        OnReloadEnemies?.Invoke();
+        OnScoreUpdated?.Invoke(0);
         OnEnableDisableControllerPlayer?.Invoke();
         Time.timeScale = 1f;
         OnReloadLevel?.Invoke();
@@ -160,6 +172,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RegisterEnemyKill()
+    {
+        _playerKills++;
+        CalculateScore();
+    }
+
+    private void CalculateScore()
+    {
+        // Calculate score based on time and kills
+        // Lower time means higher score
+        float timeMultiplier = Mathf.Max(1f, 10f - _elapsedTime);
+        int killBonus = _playerKills * 100; // 100 points per kill
+
+        _totalScore = Mathf.RoundToInt(killBonus + (timeMultiplier * 10));
+
+        OnScoreUpdated?.Invoke(_totalScore);
+    }
 
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class EntityBehavior : MonoBehaviour
 {
-    public event Action OnDeath;
-
     // Initial values when scene is loaded
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
@@ -57,8 +55,8 @@ public abstract class EntityBehavior : MonoBehaviour
 
     protected virtual void Die()
     {
-        OnDeath?.Invoke();
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        //Destroy(gameObject);
     }
 
     private void OnDisable()

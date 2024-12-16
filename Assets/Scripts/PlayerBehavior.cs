@@ -6,7 +6,7 @@ public class PlayerBehavior : EntityBehavior
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            Die();
+            //Die();
         }
     }
 
