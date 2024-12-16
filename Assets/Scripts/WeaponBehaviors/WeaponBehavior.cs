@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -30,8 +31,16 @@ public class WeaponBehavior : MonoBehaviour
     // Inner logic classes
     public Weapon weapon;
 
+    // Initial values when scene is loaded
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
+
     protected void Start()
     {
+        GameManager.Instance.OnReloadLevel += ResetState;
+        _initialPosition = transform.position;
+        _initialRotation = transform.rotation;
+
         _rb = this.gameObject.GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
     }
@@ -75,5 +84,16 @@ public class WeaponBehavior : MonoBehaviour
         _rb.useGravity = true;
         _rb.constraints = _originalConstraints;
         transform.SetParent(null);
+    }
+
+    private void ResetState()
+    {
+        transform.position = _initialPosition;
+        transform.rotation = _initialRotation;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnReloadLevel -= ResetState;
     }
 }
