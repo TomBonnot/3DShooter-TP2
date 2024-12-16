@@ -64,6 +64,7 @@ public class Controller : MonoBehaviour
 
     private bool _isHoldingBasicLeft;
     private bool _isHoldingBasicRight;
+    private int _hp;
 
     void Awake()
     {
@@ -93,6 +94,8 @@ public class Controller : MonoBehaviour
         drop.Enable();
         rush.Enable();
         dodgeRoll.Enable();
+
+        _hp = 3;
     }
 
     private void equipBasicWeapon()
@@ -342,5 +345,11 @@ public class Controller : MonoBehaviour
     public Targeted getTargeted()
     {
         return targeted;
+    }
+
+    public void getAttacked()
+    {
+        _hp -= 1;
+        Debug.Log("Player hurting");
     }
 }
