@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SingularityGroup.HotReload;
 using UnityEngine;
@@ -7,8 +8,11 @@ public class MeleeEnemyBehavior : EnemyBehavior
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _attackRange;
     [SerializeField] private float _cooldownInS;
+    [SerializeField] private float _pushStrength;
+    [SerializeField] private float _verticalPushStrength;
     private Rigidbody _rb;
     private bool _canAttack;
+    private Vector3 _targetDirection;
 
     protected override void Start()
     {
@@ -22,7 +26,6 @@ public class MeleeEnemyBehavior : EnemyBehavior
         {
             float distanceThisFrame = distanceToPlayer();
             this.transform.LookAt(_player.transform);
-            // Debug.Log(distanceThisFrame + " " + _attackRange + " " + _canAttack);
             if (distanceThisFrame > _attackRange / 2) // pour éviter que l'ennemi se rapproche trop 
             {
                 ChasePlayer();
@@ -38,14 +41,18 @@ public class MeleeEnemyBehavior : EnemyBehavior
             }
         }
     }
+
     protected override void AttackPlayer()
     {
+        Vector3 pushDirection = new(_targetDirection.x * _pushStrength, _targetDirection.y + _verticalPushStrength, _targetDirection.z * _pushStrength);
+        Debug.Log(pushDirection);
+        _playerController.GetRigidbody().AddForce(pushDirection);
         _playerController.getAttacked();
     }
 
     private void ChasePlayer()
     {
-        Vector3 _targetDirection = (_player.transform.position - this.transform.position).normalized;
+        _targetDirection = (_player.transform.position - this.transform.position).normalized;
 
         Vector3 _velocity = new Vector3(_targetDirection.x * _moveSpeed, _rb.linearVelocity.y, _targetDirection.z * _moveSpeed);
         _rb.linearVelocity = _velocity;

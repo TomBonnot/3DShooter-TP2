@@ -301,8 +301,6 @@ public class Controller : MonoBehaviour
     private void Move()
     {
         setLocalMove();
-        Debug.Log(_moveDirection);
-        Debug.Log(_moveDirection.x == 0 && _moveDirection.z == 0);
         if (_moveDirection.x == 0 && _moveDirection.z == 0)
         {
             _col.material.staticFriction = 0.9f;

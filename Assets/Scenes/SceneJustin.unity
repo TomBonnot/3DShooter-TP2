@@ -763,8 +763,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 5
-  _attackRange: 3
+  _attackRange: 5
   _cooldownInS: 3
+  _pushStrength: 1000
+  _verticalPushStrength: 100
 --- !u!114 &498528307
 MonoBehaviour:
   m_ObjectHideFlags: 0
