@@ -373,10 +373,4 @@ public class Controller : MonoBehaviour
     {
         return targeted;
     }
-
-    public void getAttacked()
-    {
-        _hp -= 1;
-        Debug.Log("Player hurting");
-    }
 }
