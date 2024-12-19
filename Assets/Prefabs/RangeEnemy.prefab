@@ -380,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55cf01b28d3e5454487cba3095326829, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _visionRange: 20
   _camera: {fileID: 0}
   _gun: {fileID: 1003272457182407798}
   _gunPoint: {fileID: 4449664380763271155}
