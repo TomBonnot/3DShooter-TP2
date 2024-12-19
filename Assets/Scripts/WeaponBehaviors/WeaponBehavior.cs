@@ -90,6 +90,8 @@ public class WeaponBehavior : MonoBehaviour
     {
         transform.position = _initialPosition;
         transform.rotation = _initialRotation;
+        resetAmmo();
+
     }
 
     private void OnDisable()
