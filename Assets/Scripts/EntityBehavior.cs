@@ -49,7 +49,7 @@ public abstract class EntityBehavior : MonoBehaviour
         Controller controller = GetComponent<Controller>();
         if (controller != null)
         {
-            controller.ResetCameraRotation();
+            //controller.ResetCameraRotation();
         }
     }
 
