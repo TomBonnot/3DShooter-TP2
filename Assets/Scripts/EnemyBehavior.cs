@@ -4,11 +4,13 @@ using UnityEngine.AI;
 public abstract class EnemyBehavior : EntityBehavior
 {
     protected GameObject _player;
+    protected Controller _playerController;
     protected bool _playerJustSpotted;
     [SerializeField] float _visionRange;
     protected virtual void Start()
     {
         _player = GameObject.Find("Player");
+        _playerController = _player.GetComponent<Controller>();
         _playerJustSpotted = false;
     }
     protected void OnCollisionEnter(Collision collision)
@@ -24,7 +26,7 @@ public abstract class EnemyBehavior : EntityBehavior
         RaycastHit hit;
         if(Physics.Raycast(transform.position, (_player.transform.position - transform.position), out hit, _visionRange))
         {
-            if(hit.transform.gameObject.tag == "Player")
+            if (hit.transform.gameObject.tag == "Player")
             {
                 return true;
             }

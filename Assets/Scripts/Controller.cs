@@ -27,6 +27,7 @@ public class Controller : MonoBehaviour
     [SerializeField] private float _rushMoveSpeed;
     [SerializeField] private float _dodgeSpeed;
     [Range(0f, 1f)][SerializeField] private float _dodgeTime;
+    [SerializeField] private float _initialBoostSpeed;
     private float _tempoMoveSpeed;
 
     //0 References mais je le garde, la mecanique de pickup sera pas la même
@@ -65,6 +66,7 @@ public class Controller : MonoBehaviour
 
     private bool _isHoldingBasicLeft;
     private bool _isHoldingBasicRight;
+    private int _hp;
 
     void Awake()
     {
@@ -73,6 +75,7 @@ public class Controller : MonoBehaviour
         _col = this.GetComponent<Collider>();
         _child = this.transform.GetChild(0).gameObject;
         _camera = this.GetComponentInChildren<Camera>();
+
         _playerInputEnable = true;
         _tempoMoveSpeed = _moveSpeed;
         targeted = new Targeted();
@@ -119,7 +122,7 @@ public class Controller : MonoBehaviour
     {
         // Get where the player is aiming
         getHovered();
-        //Pause working, only freezing the inputs. 
+        //Pause working, only freezing the inputs.
         if (pause.WasPressedThisFrame())
         {
             EnableDisablePlayerControls();
@@ -130,6 +133,10 @@ public class Controller : MonoBehaviour
         if (_playerInputEnable)
         {
             _frameInput = move.ReadValue<Vector2>();
+            if (move.WasPressedThisFrame() && _isGrounded)
+            {
+                _frameInput *= _initialBoostSpeed; // On donne un boost initial de mouvement
+            }
             clickInputs(_leftWeapon, shootLeft);
             clickInputs(_rightWeapon, shootRight);
             if (pickup.WasPressedThisFrame())
@@ -174,7 +181,7 @@ public class Controller : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
         // Perform a raycast
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player")))
         {
             targeted.target = hit.collider.gameObject;
             targeted.targetPoint = hit.point;
@@ -302,6 +309,18 @@ public class Controller : MonoBehaviour
     private void Move()
     {
         setLocalMove();
+        if (_moveDirection.x == 0 && _moveDirection.z == 0)
+        {
+            _col.material.staticFriction = 0.9f;
+            _col.material.dynamicFriction = 0.9f;
+            _col.material.frictionCombine = PhysicsMaterialCombine.Maximum;
+        }
+        else
+        {
+            _col.material.staticFriction = 0f;
+            _col.material.dynamicFriction = 0f;
+            _col.material.frictionCombine = PhysicsMaterialCombine.Average;
+        }
         _rb.AddForce(new Vector3(_localMove.x * _moveSpeed * Time.deltaTime, 0, _localMove.z * _moveSpeed * Time.deltaTime));
     }
 
@@ -353,5 +372,11 @@ public class Controller : MonoBehaviour
     public Targeted getTargeted()
     {
         return targeted;
+    }
+
+    public void getAttacked()
+    {
+        _hp -= 1;
+        Debug.Log("Player hurting");
     }
 }
