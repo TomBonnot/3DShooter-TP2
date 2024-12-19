@@ -19,7 +19,9 @@ public class WeaponBehavior : MonoBehaviour
     [Range(10, 300)][SerializeField] protected float _bulletSpeed = 70f;
     [Range(1, 10)][SerializeField] protected float _bulletLieftime = 3f;
     [SerializeField] protected int _maxAmmo;
-    [ContextMenu("Reload")] void resetAmmo() {
+    [ContextMenu("Reload")]
+    void resetAmmo()
+    {
         weapon.ammo = 2000;
     }
 
@@ -30,6 +32,8 @@ public class WeaponBehavior : MonoBehaviour
 
     // Inner logic classes
     public Weapon weapon;
+    public bool isEquipped = false;
+    protected Controller _playerController;
 
     // Initial values when scene is loaded
     private Vector3 _initialPosition;
@@ -37,12 +41,20 @@ public class WeaponBehavior : MonoBehaviour
 
     protected void Start()
     {
+        setRb();
         GameManager.Instance.OnReloadLevel += ResetState;
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
-
-        _rb = this.gameObject.GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
+        _playerController = GameObject.FindWithTag(Tags.PLAYER).GetComponent<Controller>();
+    }
+
+    void Update()
+    {
+        if (isEquipped)
+        {
+            transform.LookAt(_playerController.getTargeted().targetPoint);
+        }
     }
 
     /**
@@ -67,6 +79,10 @@ public class WeaponBehavior : MonoBehaviour
     **/
     public void PickUp(Transform localParent)
     {
+        if (!_rb) setRb();
+        Debug.Log(localParent);
+        Debug.Log(_rb);
+        isEquipped = true;
         transform.SetParent(localParent);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -79,11 +95,19 @@ public class WeaponBehavior : MonoBehaviour
     /**
     *   Simple method pubicly accessible (for Controller mainly) to drop the weapon
     **/
-    public void Drop()
+    public void Drop(bool andDestroy)
     {
+        isEquipped = false;
         _rb.useGravity = true;
         _rb.constraints = _originalConstraints;
         transform.SetParent(null);
+        if (andDestroy)
+            Destroy(this.gameObject);
+    }
+
+    private void setRb()
+    {
+        _rb = this.gameObject.GetComponent<Rigidbody>();
     }
 
     /**
