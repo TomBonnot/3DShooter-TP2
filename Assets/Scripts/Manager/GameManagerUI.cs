@@ -15,8 +15,10 @@ public class GameManagerUI : MonoBehaviour
     [SerializeField] private GameObject _deadPanel;
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _optionMenu;
+    [SerializeField] private GameObject _levelCompleted;
     [SerializeField] private TMP_Text _timer;
-    [SerializeField] private TMP_Text _score;
+    [SerializeField] private TMP_Text _scoreGameOver;
+    [SerializeField] private TMP_Text _scoreLevelCompleted;
 
     private void Start()
     {
@@ -28,11 +30,18 @@ public class GameManagerUI : MonoBehaviour
         _gameManager.OnUpdateTimer += UpdateTimer;
         _gameManager.OnReloadLevel += CloseDeadPanel;
         _gameManager.OnScoreUpdated += UpdateScore;
+        _gameManager.OnLevelCompleted += DisplayLevelCompletedPanel;
+    }
+
+    private void DisplayLevelCompletedPanel(bool _state, int _totalScore)
+    {
+        _levelCompleted.SetActive(_state);
+        _scoreLevelCompleted.text = "Score : " + _totalScore;
     }
 
     private void UpdateScore(int _totalScore)
     {
-        _score.text = "Score : " + _totalScore;
+        _scoreGameOver.text = "Score : " + _totalScore;
     }
 
     // Displays the panel with the score and the retry button
@@ -61,5 +70,9 @@ public class GameManagerUI : MonoBehaviour
     {
         _gameManager.OnGameOver -= ActiveDeadPanel;
         _gameManager.OnGamePaused -= DisplayPauseMenu;
+        _gameManager.OnUpdateTimer -= UpdateTimer;
+        _gameManager.OnReloadLevel -= CloseDeadPanel;
+       _gameManager.OnScoreUpdated -= UpdateScore;
+        _gameManager.OnLevelCompleted -= DisplayLevelCompletedPanel;
     }
 }

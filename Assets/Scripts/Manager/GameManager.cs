@@ -6,28 +6,33 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
     public event Action OnGameOver;
     public event Action<bool> OnGamePaused;
     public event Action OnEnableDisableControllerPlayer;
     public event Action OnStartCountDown;
-    public event Action<string> OnUpdateTimer;
-    public event Action OnReloadLevel;
+    public event Action<string> OnUpdateTimer;    
     public event Action<int> OnScoreUpdated;
+    public event Action OnReloadLevel;
     public event Action OnReloadEnemies;
+    public event Action<bool, int> OnLevelCompleted;
 
     private GameObject player;
 
     private bool _isGamePaused;
     private bool _isPlaying;
     private bool _firstTime;
-    private bool _isDead;
     private float _elapsedTime;
     private TimeSpan _timePlaying;
 
     [Header("Score")]
     private int _playerKills;
     private int _totalScore;
+    private float _baseTimeMultiplier;
+    private int _pointsPerKill;
+    private int _timeMultiplierFactor;
 
+    private Coroutine _timerCoroutine;  // Add this field to track the timer coroutine
 
     private void Awake()
     {
@@ -48,45 +53,69 @@ public class GameManager : MonoBehaviour
     {
         _playerKills = 0;
         _totalScore = 0;
-        _isDead = false;
+        _baseTimeMultiplier = 10f;
+        _pointsPerKill = 100;
+        _timeMultiplierFactor = 10;
+        
         _isGamePaused = false;
         _isPlaying = false;
         _firstTime = true;
         CheckForPlayer();
-        
         if (IsPlayerInScene() && _firstTime)
         {
-            
             _elapsedTime = 0f;
             OnEnableDisableControllerPlayer?.Invoke();
             OnStartCountDown?.Invoke();
         }
     }
 
+    private void CheckForPlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    private bool IsPlayerInScene()
+    {
+        return player != null;
+    }
+
     // The player is dead
     public void GameOver()
     {
         _isPlaying = false;
-        _isDead = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnGameOver?.Invoke();
-        CalculateScore();
+        // Your score is 0 when you die
+        OnScoreUpdated?.Invoke(0);
         Time.timeScale = 0f;
     }
 
     // Restart the current level
     public void RestartLevel()
     {
+        // Stop existing timer coroutine if it exists
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
+
+        _isPlaying = false;  // Ensure we stop any existing timer
         _playerKills = 0;
         _totalScore = 0;
+        _elapsedTime = 0f;
+
         OnReloadEnemies?.Invoke();
-        OnScoreUpdated?.Invoke(0);
+        OnLevelCompleted?.Invoke(false, 0);
+
         OnEnableDisableControllerPlayer?.Invoke();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         Time.timeScale = 1f;
         OnReloadLevel?.Invoke();
+
         BeginGame();
-        _elapsedTime = 0f;
     }
 
     // Load the scene
@@ -99,23 +128,9 @@ public class GameManager : MonoBehaviour
         }
         
     }
-
-    // Quit the game
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
-
-    // Pause and unpause the game
     public void PauseGame()
     {
-        _isGamePaused = !_isGamePaused;
-
-        // Only change _isPlaying if BeginGame() has been called (when _firstTime is false)
-        if (!_firstTime)
-        {
-            _isPlaying = !_isGamePaused;
-        }
+        _isGamePaused = !_isGamePaused;       
 
         if (_isGamePaused)
         {
@@ -129,23 +144,9 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
             Time.timeScale = 1f;
 
-            // Only call Playing() if BeginGame() has been called
-            if (!_firstTime)
-            {
-                Playing();
-            }
+            
         }
         OnGamePaused?.Invoke(_isGamePaused);
-    }
-
-    private void CheckForPlayer()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
-
-    private bool IsPlayerInScene()
-    {
-        return player != null;
     }
 
     public void BeginGame()
@@ -153,47 +154,77 @@ public class GameManager : MonoBehaviour
         _firstTime = false;
         OnEnableDisableControllerPlayer?.Invoke();
         _isPlaying = true;
-        StartCoroutine(UpdateTimer());
+
+        // Stop any existing timer coroutine
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+        }
+        _timerCoroutine = StartCoroutine(UpdateTimer());
     }
 
     private void Playing()
     {
-        StartCoroutine(UpdateTimer());
+        // Stop any existing timer coroutine
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+        }
+        _timerCoroutine = StartCoroutine(UpdateTimer());
     }
 
     private IEnumerator UpdateTimer()
     {
         while (_isPlaying)
         {
-            _elapsedTime += Time.deltaTime;
-            _timePlaying = TimeSpan.FromSeconds(_elapsedTime);
-            OnUpdateTimer?.Invoke(_timePlaying.ToString("mm':'ss'.'ff"));
+            if (!_isGamePaused)  // Only update time if game is not paused
+            {
+                _elapsedTime += Time.deltaTime;
+                _timePlaying = TimeSpan.FromSeconds(_elapsedTime);
+                OnUpdateTimer?.Invoke(_timePlaying.ToString("mm':'ss'.'ff"));
+            }
             yield return null;
         }
     }
 
+
+    // Save the number of enemies killed
     public void RegisterEnemyKill()
     {
         _playerKills++;
+    }
+
+    public void LevelCompleted()
+    {
         CalculateScore();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0f;
     }
 
     private void CalculateScore()
     {
         // Calculate score based on time and kills
         // Lower time means higher score
-        float timeMultiplier = Mathf.Max(1f, 10f - _elapsedTime);
-        int killBonus = _playerKills * 100; // 100 points per kill
+        float timeMultiplier = Mathf.Max(1f, _baseTimeMultiplier - _elapsedTime);
+        int killBonus = _playerKills * _pointsPerKill; // 100 points per kill
 
-        _totalScore = Mathf.RoundToInt(killBonus + (timeMultiplier * 10));
+        _totalScore = Mathf.RoundToInt(killBonus + (timeMultiplier * _timeMultiplierFactor));
 
-        OnScoreUpdated?.Invoke(_totalScore);
+        //OnScoreUpdated?.Invoke(_totalScore);
+        OnLevelCompleted?.Invoke(true, _totalScore);
     }
 
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         CheckForPlayer();
+    }
+
+    // Quit the game
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     private void OnEnable()
