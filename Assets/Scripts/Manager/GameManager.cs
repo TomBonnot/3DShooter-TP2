@@ -5,25 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    /** The GameManager class handles game state management **/
+
+    // Singleton instance of the GameManager
     public static GameManager Instance { get; private set; }
 
-    public event Action OnGameOver;
-    public event Action<bool> OnGamePaused;
-    public event Action OnEnableDisableControllerPlayer;
-    public event Action OnStartCountDown;
-    public event Action<string> OnUpdateTimer;    
-    public event Action<int> OnScoreUpdated;
-    public event Action OnReloadLevel;
-    public event Action OnReloadEnemies;
-    public event Action<bool, int> OnLevelCompleted;
+    // Events for broadcasting game state changes to other components
+    public event Action OnGameOver;                      // Triggered when the player dies
+    public event Action<bool> OnGamePaused;              // Triggered when the game is paused/unpaused
+    public event Action OnEnableDisableControllerPlayer; // Triggered to enable/disable player controls
+    public event Action OnStartCountDown;                // Triggered when a countdown starts
+    public event Action<string> OnUpdateTimer;           // Triggered to update the timer display
+    public event Action<int> OnScoreUpdated;             // Triggered when the score is updated
+    public event Action OnReloadLevel;                   // Triggered to reload the level
+    public event Action OnReloadEnemies;                 // Triggered to reload enemy states
+    public event Action<bool, int> OnLevelCompleted;     // Triggered when a level is completed
 
+    // Reference to the player GameObject
     private GameObject player;
 
+    // Internal state variables
     private bool _isGamePaused;
     private bool _isPlaying;
     private bool _firstTime;
     private float _elapsedTime;
     private TimeSpan _timePlaying;
+    private Coroutine _timerCoroutine;  // Add this field to track the timer coroutine
 
     [Header("Score")]
     private int _playerKills;
@@ -32,11 +39,11 @@ public class GameManager : MonoBehaviour
     private int _pointsPerKill;
     private int _timeMultiplierFactor;
 
-    private Coroutine _timerCoroutine;  // Add this field to track the timer coroutine
+    
 
     private void Awake()
     {
-
+        // Singleton pattern implementation to ensure only one GameManager exists
         if (Instance == null)
         {
             Instance = this;
@@ -61,6 +68,8 @@ public class GameManager : MonoBehaviour
         _isPlaying = false;
         _firstTime = true;
         CheckForPlayer();
+
+        // If the player is in the scene and this is the first time, start the countdown
         if (IsPlayerInScene() && _firstTime)
         {
             _elapsedTime = 0f;
@@ -69,17 +78,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /**
+    *   Find if the player is in the scene
+    **/
     private void CheckForPlayer()
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
+    /**
+    *   Is the player in the scene
+    **/
     private bool IsPlayerInScene()
     {
         return player != null;
     }
 
-    // The player is dead
+    /**
+    *   Handles the game over state when the player dies
+    **/
     public void GameOver()
     {
         _isPlaying = false;
@@ -88,10 +105,13 @@ public class GameManager : MonoBehaviour
         OnGameOver?.Invoke();
         // Your score is 0 when you die
         OnScoreUpdated?.Invoke(0);
+        // Pause the game
         Time.timeScale = 0f;
     }
 
-    // Restart the current level
+    /**
+    *   Restarts the current level and resets game variables
+    **/
     public void RestartLevel()
     {
         // Stop existing timer coroutine if it exists
@@ -118,7 +138,9 @@ public class GameManager : MonoBehaviour
         BeginGame();
     }
 
-    // Load the scene
+    /**
+    *   Loads a specified scene
+    **/
     public void LoadScene(string _sceneName)
     {
         if(Instance == this)
@@ -128,6 +150,10 @@ public class GameManager : MonoBehaviour
         }
         
     }
+
+    /**
+    *   Toggles the paused state of the game
+    **/
     public void PauseGame()
     {
         _isGamePaused = !_isGamePaused;       
@@ -136,12 +162,14 @@ public class GameManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Time.timeScale = 0f;
+            // Pause the game
+            Time.timeScale = 0f; 
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            // Resume the game
             Time.timeScale = 1f;
 
             
@@ -149,6 +177,9 @@ public class GameManager : MonoBehaviour
         OnGamePaused?.Invoke(_isGamePaused);
     }
 
+    /**
+    *   Begins the game and starts the timer
+    **/
     public void BeginGame()
     {
         _firstTime = false;
@@ -163,16 +194,22 @@ public class GameManager : MonoBehaviour
         _timerCoroutine = StartCoroutine(UpdateTimer());
     }
 
-    private void Playing()
-    {
-        // Stop any existing timer coroutine
-        if (_timerCoroutine != null)
-        {
-            StopCoroutine(_timerCoroutine);
-        }
-        _timerCoroutine = StartCoroutine(UpdateTimer());
-    }
+    /**
+    *   Resume the game
+    **/
+    //private void Playing()
+    //{
+    //    // Stop any existing timer coroutine
+    //    if (_timerCoroutine != null)
+    //    {
+    //        StopCoroutine(_timerCoroutine);
+    //    }
+    //    _timerCoroutine = StartCoroutine(UpdateTimer());
+    //}
 
+    /**
+    *   Updates the timer while the game is in progress
+    **/
     private IEnumerator UpdateTimer()
     {
         while (_isPlaying)
@@ -188,12 +225,17 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // Save the number of enemies killed
+    /**
+    *   Tracks the number of enemies killed by the player
+    **/
     public void RegisterEnemyKill()
     {
         _playerKills++;
     }
 
+    /**
+    *   Handles actions when the level is completed
+    **/
     public void LevelCompleted()
     {
         CalculateScore();
@@ -202,26 +244,32 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    /**
+    *   Calculates the player's score based on kills and time
+    **/
     private void CalculateScore()
     {
         // Calculate score based on time and kills
         // Lower time means higher score
         float timeMultiplier = Mathf.Max(1f, _baseTimeMultiplier - _elapsedTime);
-        int killBonus = _playerKills * _pointsPerKill; // 100 points per kill
+        int killBonus = _playerKills * _pointsPerKill;
 
         _totalScore = Mathf.RoundToInt(killBonus + (timeMultiplier * _timeMultiplierFactor));
 
-        //OnScoreUpdated?.Invoke(_totalScore);
         OnLevelCompleted?.Invoke(true, _totalScore);
     }
 
-
+    /**
+    *   Check for the player GameObject after the scene is loaded
+    **/
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         CheckForPlayer();
     }
 
-    // Quit the game
+    /**
+    *    Quit the game
+    **/
     public void QuitGame()
     {
         Application.Quit();

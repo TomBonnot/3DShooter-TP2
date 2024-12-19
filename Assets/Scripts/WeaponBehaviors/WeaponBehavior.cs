@@ -86,6 +86,9 @@ public class WeaponBehavior : MonoBehaviour
         transform.SetParent(null);
     }
 
+    /**
+    *   Reset the weapon to it's original state
+    **/
     private void ResetState()
     {
         transform.position = _initialPosition;

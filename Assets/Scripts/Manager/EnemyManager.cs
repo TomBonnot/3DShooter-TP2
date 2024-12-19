@@ -3,15 +3,24 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    /** This class reset the state of enemies when we restart a level **/
+
+    // A list to store all enemy GameObjects in the scene
     private List<GameObject> enemies;
 
     void Start()
     {
-        // Get all enemies at the start of the scene
+        // Initialize the list of enemies by finding all GameObjects tagged as "Enemy"
         enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+
+        // Subscribe to the OnReloadEnemies event from the GameManager
+        // This will allow the manager to reset enemies when the event is triggered
         GameManager.Instance.OnReloadEnemies += ResetEnemies;
     }
 
+    /**
+    *   Reactivate all enemy GameObjects in the scene
+    **/
     private void ResetEnemies()
     {
         // Reactivate all enemies
@@ -23,6 +32,9 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    /**
+    *   Unsubscribe from the OnReloadEnemies event to prevent memory leaks or null reference errors
+    **/
     private void OnDisable()
     {
         GameManager.Instance.OnReloadEnemies -= ResetEnemies;
