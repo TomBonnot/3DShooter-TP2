@@ -54,6 +54,7 @@ public class Controller : MonoBehaviour
     public InputAction drop;
     public InputAction rush;
     public InputAction dodgeRoll;
+    public InputAction restartLevel;
 
     //Not needed to be visible in the Editor
     private Vector3 _localMove = Vector3.zero;
@@ -96,8 +97,7 @@ public class Controller : MonoBehaviour
         drop.Enable();
         rush.Enable();
         dodgeRoll.Enable();
-
-        _hp = 3;
+        restartLevel.Enable();
     }
 
     private void equipBasicWeapon()
@@ -113,7 +113,8 @@ public class Controller : MonoBehaviour
         // Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
 
-        GameManager.Instance.OnGameOver += DisablePlayerControls;
+        //GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
+        GameManager.Instance.OnEnableDisableControllerPlayer += EnableDisablePlayerControls;
     }
 
 
@@ -123,7 +124,10 @@ public class Controller : MonoBehaviour
         getHovered();
         //Pause working, only freezing the inputs.
         if (pause.WasPressedThisFrame())
-            _playerInputEnable = !_playerInputEnable;
+        {
+            EnableDisablePlayerControls();
+            GameManager.Instance.PauseGame();
+        }
 
         //If inputs are available, handle every inputs inside
         if (_playerInputEnable)
@@ -147,6 +151,10 @@ public class Controller : MonoBehaviour
                 Jump();
             if (dodgeRoll.WasPressedThisFrame() && !_isDodging)
                 Dodge();
+            if (restartLevel.WasPressedThisFrame())
+            {
+                GameManager.Instance.RestartLevel();
+            }
         }
 
         //Methods called on each frame to handle various mechanics 
@@ -342,14 +350,15 @@ public class Controller : MonoBehaviour
         return this._rb;
     }
 
-    public void DisablePlayerControls()
+    public void EnableDisablePlayerControls()
     {
         _playerInputEnable = !_playerInputEnable;
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.OnGameOver -= DisablePlayerControls;
+        //GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
+        GameManager.Instance.OnEnableDisableControllerPlayer -= EnableDisablePlayerControls;
     }
 
     /*
@@ -363,11 +372,5 @@ public class Controller : MonoBehaviour
     public Targeted getTargeted()
     {
         return targeted;
-    }
-
-    public void getAttacked()
-    {
-        _hp -= 1;
-        Debug.Log("Player hurting");
     }
 }

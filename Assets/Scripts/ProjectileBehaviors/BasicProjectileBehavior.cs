@@ -9,7 +9,13 @@ public class BasicProjectileBehavior : ProjectileBehavior
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("pew");
+            //Debug.Log("pew");
+            Destroy(gameObject);
         }
+        else if (collision.gameObject.GetComponent<EnemyBehavior>() != null)
+        {
+            collision.gameObject.GetComponent<EnemyBehavior>().EnemyKilled();
+        }
+        Destroy(gameObject);
     }
 }

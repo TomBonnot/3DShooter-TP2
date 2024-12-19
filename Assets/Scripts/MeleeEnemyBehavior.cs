@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using SingularityGroup.HotReload;
 using UnityEngine;
 
 public class MeleeEnemyBehavior : EnemyBehavior
@@ -47,7 +46,7 @@ public class MeleeEnemyBehavior : EnemyBehavior
         Vector3 pushDirection = new(_targetDirection.x * _pushStrength, _targetDirection.y + _verticalPushStrength, _targetDirection.z * _pushStrength);
         Debug.Log(pushDirection);
         _playerController.GetRigidbody().AddForce(pushDirection);
-        _playerController.getAttacked();
+       
     }
 
     private void ChasePlayer()
