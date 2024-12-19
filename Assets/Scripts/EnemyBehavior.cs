@@ -15,7 +15,7 @@ public abstract class EnemyBehavior : EntityBehavior
     {
         if (collision.gameObject.tag == "Player")
         {
-            Die();            
+            //Die();            
         }
     }
 
