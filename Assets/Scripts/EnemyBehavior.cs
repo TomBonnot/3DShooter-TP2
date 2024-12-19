@@ -6,6 +6,7 @@ public abstract class EnemyBehavior : EntityBehavior
     protected GameObject _player;
     protected Controller _playerController;
     protected bool _playerJustSpotted;
+    [SerializeField] float _visionRange;
     protected virtual void Start()
     {
         _player = GameObject.Find("Player");
@@ -14,16 +15,16 @@ public abstract class EnemyBehavior : EntityBehavior
     }
     protected void OnCollisionEnter(Collision collision)
     {
-        // if (collision.gameObject.tag == "Player")
-        // {
-        //     Die();            
-        // }
+        if (collision.gameObject.tag == "Player")
+        {
+            //Die();            
+        }
     }
 
     protected bool IsPlayerInSight()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, (_player.transform.position - transform.position), out hit, Mathf.Infinity))
+        if(Physics.Raycast(transform.position, (_player.transform.position - transform.position), out hit, _visionRange))
         {
             if (hit.transform.gameObject.tag == "Player")
             {
@@ -31,6 +32,17 @@ public abstract class EnemyBehavior : EntityBehavior
             }
         }
         return false;
+    }
+
+    public void EnemyKilled()
+    {
+        Die();
+    }
+
+    protected override void Die()
+    {
+        GameManager.Instance.RegisterEnemyKill();
+        base.Die();
     }
 
     protected abstract void AttackPlayer();

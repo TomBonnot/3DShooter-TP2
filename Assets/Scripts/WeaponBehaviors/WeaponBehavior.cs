@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -34,9 +35,16 @@ public class WeaponBehavior : MonoBehaviour
     public bool isEquipped = false;
     protected Controller _playerController;
 
+    // Initial values when scene is loaded
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
+
     protected void Start()
     {
         setRb();
+        GameManager.Instance.OnReloadLevel += ResetState;
+        _initialPosition = transform.position;
+        _initialRotation = transform.rotation;
         _originalConstraints = _rb.constraints;
         _playerController = GameObject.FindWithTag(Tags.PLAYER).GetComponent<Controller>();
     }
@@ -100,5 +108,21 @@ public class WeaponBehavior : MonoBehaviour
     private void setRb()
     {
         _rb = this.gameObject.GetComponent<Rigidbody>();
+    }
+
+    /**
+    *   Reset the weapon to it's original state
+    **/
+    private void ResetState()
+    {
+        transform.position = _initialPosition;
+        transform.rotation = _initialRotation;
+        resetAmmo();
+
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnReloadLevel -= ResetState;
     }
 }

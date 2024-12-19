@@ -27,6 +27,16 @@ public class GrenadeBehavior : ProjectileBehavior
                 // Apply explosion force to every objects in the zone
                 _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion);
             }
+
+            // Check if the hit object is an enemy
+            EnemyBehavior enemyBehavior = hit.GetComponent<EnemyBehavior>();
+
+            if(enemyBehavior != null)
+            {
+                enemyBehavior.EnemyKilled();
+            }
+
+
         }
 
         ParticleSystem _eplosionPrefab = Instantiate(_grenade._explosion_prefab, _explosionPosition, Quaternion.identity).GetComponent<ParticleSystem>();
