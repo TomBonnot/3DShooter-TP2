@@ -20,6 +20,55 @@ public class AntiGravityPlayer : MonoBehaviour
         GameManager.Instance.OnReloadLevel += ResetNormalGravity;
     }
 
+    // private void FixedUpdate()
+    // {
+    //     if (IsGravityInverted)
+    //     {
+    //         // Apply inverse gravity
+    //         _rb.AddForce(Vector3.up * _gravityForce * 2f, ForceMode.Acceleration);
+    //     }
+
+    //     // Handle rotation
+    //     if (IsRotating)
+    //     {
+    //         // Smoothly rotate to target rotation
+    //         transform.rotation = Quaternion.Lerp(transform.rotation, TargetRotation, Time.fixedDeltaTime * _rotationSpeed);
+
+    //         // Check if we're close enough to target rotation
+    //         if (Quaternion.Angle(transform.rotation, TargetRotation) < 1f)
+    //         {
+    //             transform.rotation = TargetRotation;
+    //             IsRotating = false;
+    //             // Re-enable player controls once rotation is complete
+    //             _controller.EnableDisablePlayerControls();
+    //         }
+    //     }
+    // }
+
+    private void ResetNormalGravity()
+    {
+        if (IsGravityInverted)
+        {
+            IsGravityInverted = false;
+        }
+    }
+
+public void ChangeGravity()
+    {
+        IsGravityInverted = !IsGravityInverted;
+
+        // Calculate new target rotation while preserving the looking direction
+        Controller controller = GetComponent<Controller>();
+        TargetRotation = Quaternion.Euler(IsGravityInverted ? 180f : 0f, controller.IsLookingBack ? 180f : 0f, 0f);
+
+        // Start rotation and temporarily disable player controls
+        IsRotating = true;
+        _controller.EnableDisablePlayerControls();
+
+        // Reset the last move direction to prevent unwanted rotation
+        _controller.ResetLastMoveDirection();
+    }
+
     private void FixedUpdate()
     {
         if (IsGravityInverted)
@@ -39,42 +88,11 @@ public class AntiGravityPlayer : MonoBehaviour
             {
                 transform.rotation = TargetRotation;
                 IsRotating = false;
-                // Re-enable player controls once rotation is complete
+                // Re-enable player controls and sync the controller's rotation
                 _controller.EnableDisablePlayerControls();
+                _controller.SyncRotationWithGravity();
             }
         }
-    }
-
-    private void ResetNormalGravity()
-    {
-        if (IsGravityInverted)
-        {
-            IsGravityInverted = false;
-        }
-    }
-
-    public void ChangeGravity()
-    {
-        IsGravityInverted = !IsGravityInverted;
-
-        // Calculate new target rotation
-        float fixedYRotation = IsGravityInverted ? 180f : 0f;
-        TargetRotation = Quaternion.Euler(IsGravityInverted ? 180f : 0f, fixedYRotation, 0f);
-        //if (_isGravityInverted)
-        //{
-        //    TargetRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, 0f);
-        //}
-        //else
-        //{
-        //    TargetRotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
-        //}
-
-        // Start rotation and temporarily disable player controls
-        IsRotating = true;
-        _controller.EnableDisablePlayerControls();
-
-        // Reset the last move direction to prevent unwanted rotation
-        _controller.ResetLastMoveDirection();
     }
     public Vector3 GetGroundCheckDirection()
     {

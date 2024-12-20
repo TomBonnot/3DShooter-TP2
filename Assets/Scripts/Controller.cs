@@ -79,6 +79,7 @@ public class Controller : MonoBehaviour
     private bool _isHoldingBasicLeft;
     private bool _isHoldingBasicRight;
     public bool IsLookingBack { get; private set; }
+    private float _currentYRotation;
 
     void Awake()
     {
@@ -94,6 +95,7 @@ public class Controller : MonoBehaviour
         targeted.target = this.gameObject;
         targeted.targetPoint = Vector3.zero;
         IsLookingBack = false;
+        _currentYRotation = 0f;
 
         // On commence avec deux guns standards
         equipBasicWeapon();
@@ -176,28 +178,58 @@ public class Controller : MonoBehaviour
                 Drop();
                 Drop();
             }
-            if (lookBackwards.WasPressedThisFrame())
-            {
-                IsLookingBack = !IsLookingBack;
-                if (IsLookingBack)
-                    transform.rotation = Quaternion.Euler(0, 180, 0);
-                else
-                    transform.rotation = Quaternion.Euler(0, 0, 0);
-                if (GetComponent<AntiGravityPlayer>().IsGravityInverted)
-                {
-                    transform.rotation = Quaternion.Euler(180f, 0, 0);
-                }
-                else
-                {
-
-                }
-            }
+            HandleLookBackward();
+            // if (lookBackwards.WasPressedThisFrame())
+            // {
+            //     IsLookingBack = !IsLookingBack;
+            //     if (IsLookingBack)
+            //         transform.rotation = Quaternion.Euler(0, 180f, 0);
+            //     else
+            //         transform.rotation = Quaternion.Euler(0, 0, 0);
+            //     if (GetComponent<AntiGravityPlayer>().IsGravityInverted)
+            //     {
+            //         transform.rotation = Quaternion.Euler(180f, 0, 0);
+            //     }
+            // }
             LookAtTarget();
         }
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
     }
+
+    private void HandleLookBackward()
+    {
+        if (lookBackwards.WasPressedThisFrame())
+        {
+            IsLookingBack = !IsLookingBack;
+
+            // Calculate the new Y rotation
+            _currentYRotation = IsLookingBack ? 180f : 0f;
+
+            // Apply rotation based on gravity state
+            if (GetComponent<AntiGravityPlayer>().IsGravityInverted)
+            {
+                transform.rotation = Quaternion.Euler(180f, _currentYRotation, 0f);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0f, _currentYRotation, 0f);
+            }
+        }
+    }
+    public void SyncRotationWithGravity()
+    {
+        if (GetComponent<AntiGravityPlayer>().IsGravityInverted)
+        {
+            transform.rotation = Quaternion.Euler(180f, _currentYRotation, 0f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0f, _currentYRotation, 0f);
+        }
+    }
+
 
     private void clickInputs(WeaponBehavior weapon, InputAction input)
     {
