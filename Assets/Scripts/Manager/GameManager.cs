@@ -68,7 +68,6 @@ public class GameManager : MonoBehaviour
         _isPlaying = false;
         _firstTime = true;
         CheckForPlayer();
-
         // If the player is in the scene and this is the first time, start the countdown
         if (IsPlayerInScene() && _firstTime)
         {
@@ -76,7 +75,23 @@ public class GameManager : MonoBehaviour
             OnEnableDisableControllerPlayer?.Invoke();
             OnStartCountDown?.Invoke();
         }
+        //StartCoroutine(InitializePlayerState());
     }
+
+    //private IEnumerator InitializePlayerState()
+    //{
+    //    // Give other objects time to initialize and subscribe
+    //    yield return new WaitForSeconds(0.1f);
+
+    //    CheckForPlayer();
+    //    if (IsPlayerInScene() && _firstTime)
+    //    {
+    //        print("Im in the if");
+    //        _elapsedTime = 0f;
+    //        OnEnableDisableControllerPlayer?.Invoke();
+    //        OnStartCountDown?.Invoke();
+    //    }
+    //}
 
     /**
     *   Find if the player is in the scene
@@ -100,11 +115,12 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         _isPlaying = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         OnGameOver?.Invoke();
+
         // Your score is 0 when you die
         OnScoreUpdated?.Invoke(0);
+        // Disable player controls
+        //OnEnableDisableControllerPlayer?.Invoke();
         // Pause the game
         Time.timeScale = 0f;
     }
@@ -129,9 +145,6 @@ public class GameManager : MonoBehaviour
         OnReloadEnemies?.Invoke();
         OnLevelCompleted?.Invoke(false, 0);
 
-        OnEnableDisableControllerPlayer?.Invoke();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         Time.timeScale = 1f;
         OnReloadLevel?.Invoke();
 
@@ -160,15 +173,11 @@ public class GameManager : MonoBehaviour
 
         if (_isGamePaused)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
             // Pause the game
             Time.timeScale = 0f; 
         }
         else
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
             // Resume the game
             Time.timeScale = 1f;
 
@@ -193,19 +202,6 @@ public class GameManager : MonoBehaviour
         }
         _timerCoroutine = StartCoroutine(UpdateTimer());
     }
-
-    /**
-    *   Resume the game
-    **/
-    //private void Playing()
-    //{
-    //    // Stop any existing timer coroutine
-    //    if (_timerCoroutine != null)
-    //    {
-    //        StopCoroutine(_timerCoroutine);
-    //    }
-    //    _timerCoroutine = StartCoroutine(UpdateTimer());
-    //}
 
     /**
     *   Updates the timer while the game is in progress
@@ -238,9 +234,9 @@ public class GameManager : MonoBehaviour
     **/
     public void LevelCompleted()
     {
+        OnEnableDisableControllerPlayer?.Invoke();
         CalculateScore();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+
         Time.timeScale = 0f;
     }
 

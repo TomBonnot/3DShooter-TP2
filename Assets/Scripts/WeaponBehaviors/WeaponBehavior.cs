@@ -80,8 +80,8 @@ public class WeaponBehavior : MonoBehaviour
     public void PickUp(Transform localParent)
     {
         if (!_rb) setRb();
-        Debug.Log(localParent);
-        Debug.Log(_rb);
+        //Debug.Log(localParent);
+        //Debug.Log(_rb);
         isEquipped = true;
         transform.SetParent(localParent);
         transform.localPosition = Vector3.zero;
