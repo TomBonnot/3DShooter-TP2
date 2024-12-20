@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Runtime;
 using Unity.VisualScripting;
-//using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -180,8 +179,12 @@ public class Controller : MonoBehaviour
         // Create a ray from the camera through the mouse position
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
+        if (Physics.Raycast(ray, out RaycastHit playerHit, Mathf.Infinity, LayerMask.GetMask("Player")))
+        {
+            targeted.targetPoint = new Vector3(transform.position.x, transform.position.y - 10, transform.position.z);
+        }
         // Perform a raycast
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player")))
+        else if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player")))
         {
             targeted.target = hit.collider.gameObject;
             targeted.targetPoint = hit.point;

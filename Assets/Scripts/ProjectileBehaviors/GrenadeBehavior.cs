@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class GrenadeBehavior : ProjectileBehavior
 {
-   /** This class manages the behavior of the grenade **/
+    /** This class manages the behavior of the grenade **/
 
     // Data of the launched projectile
     Grenade _grenade;
 
     public void Explode()
     {
+        this.GetComponent<FMODUnity.StudioEventEmitter>().Play();
         // Disable the collider otherwise too many other collisions
         this.GetComponent<Collider>().enabled = false;
 
@@ -31,7 +32,7 @@ public class GrenadeBehavior : ProjectileBehavior
             // Check if the hit object is an enemy
             EnemyBehavior enemyBehavior = hit.GetComponent<EnemyBehavior>();
 
-            if(enemyBehavior != null)
+            if (enemyBehavior != null)
             {
                 enemyBehavior.EnemyKilled();
             }
@@ -48,5 +49,5 @@ public class GrenadeBehavior : ProjectileBehavior
     {
         this._grenade = _projectile;
     }
-    
+
 }

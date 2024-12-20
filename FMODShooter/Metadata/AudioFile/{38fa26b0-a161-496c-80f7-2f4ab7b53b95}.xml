@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{38fa26b0-a161-496c-80f7-2f4ab7b53b95}">
+		<property name="assetPath">
+			<value>gravityprojectile.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.60764583333333333</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{8eedeea1-ddb0-4348-8a07-88777e9e0761}</destination>
+		</relationship>
+	</object>
+</objects>

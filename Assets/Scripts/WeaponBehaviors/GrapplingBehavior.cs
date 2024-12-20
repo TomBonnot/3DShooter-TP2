@@ -41,6 +41,7 @@ public class GrapplingBehavior : WeaponBehavior
 
     public override void Shoot()
     {
+        _soundEmitter.Play();
         if (!weapon.expendsAmmo()) return;
         // On instantie en world space pour pas que le grapple bouge avec nous
         _shotGrapple = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, Quaternion.identity);

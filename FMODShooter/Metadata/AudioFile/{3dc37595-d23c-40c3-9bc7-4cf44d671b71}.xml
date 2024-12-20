@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{3dc37595-d23c-40c3-9bc7-4cf44d671b71}">
+		<property name="assetPath">
+			<value>750234__universfield__blaster-shot.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.83999999999999997</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{8eedeea1-ddb0-4348-8a07-88777e9e0761}</destination>
+		</relationship>
+	</object>
+</objects>

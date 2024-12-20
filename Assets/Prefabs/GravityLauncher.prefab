@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 7593484010903612828}
   - component: {fileID: 1254015562428697114}
   - component: {fileID: 8041107286146381914}
+  - component: {fileID: -4463766803938449177}
   m_Layer: 7
   m_Name: GravityLauncher
   m_TagString: Weapon
@@ -190,3 +191,34 @@ MonoBehaviour:
   isEquipped: 0
   _radiusExplosion: 3
   _explosion_prefab: {fileID: 7839951714248324183, guid: 5e79239121867cf40b074a0c15491b8d, type: 3}
+--- !u!114 &-4463766803938449177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7036352499479473209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -36933597
+      Data2: 1119903110
+      Data3: 3086499
+      Data4: -1779726739
+    Path: event:/weapons/GravityLauncher
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{6c1343a7-50d6-4991-a3f7-b3a7a266589b}">
+		<property name="assetPath">
+			<value>162363__qubodup__distant-explosion-of-propelled-grenade.flac</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.60113378684807262</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{8eedeea1-ddb0-4348-8a07-88777e9e0761}</destination>
+		</relationship>
+	</object>
+</objects>

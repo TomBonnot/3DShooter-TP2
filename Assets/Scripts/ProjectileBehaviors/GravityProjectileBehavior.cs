@@ -35,12 +35,12 @@ public class GravityProjectileBehavior : ProjectileBehavior
                 // Change the gravity of the player
                 _antiGravityPlayer.ChangeGravity();
             }
-            else if(_antiGravityEnemy != null)
+            else if (_antiGravityEnemy != null)
             {
                 _antiGravityEnemy.ChangeGravity();
             }
         }
-
+        this.GetComponent<FMODUnity.StudioEventEmitter>().Play();
         ParticleSystem _eplosionPrefab = Instantiate(_gravityProjectile._explosion_prefab, _explosionPosition, Quaternion.identity).GetComponent<ParticleSystem>();
         Destroy(gameObject);
     }

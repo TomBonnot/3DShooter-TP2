@@ -24,6 +24,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     public override void Shoot()
     {
+        _soundEmitter.Play();
         flame = Instantiate(_projectilePrefab, weapon.gunPoint.transform);
     }
 
@@ -38,6 +39,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     public override void ReleaseShoot()
     {
+        _soundEmitter.Stop();
         destroyFlame();
     }
 

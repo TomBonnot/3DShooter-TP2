@@ -16,6 +16,5 @@ public class BasicProjectileBehavior : ProjectileBehavior
         {
             collision.gameObject.GetComponent<EnemyBehavior>().EnemyKilled();
         }
-        Destroy(gameObject);
     }
 }

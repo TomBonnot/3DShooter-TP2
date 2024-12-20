@@ -19,6 +19,9 @@ public class WeaponBehavior : MonoBehaviour
     [Range(10, 300)][SerializeField] protected float _bulletSpeed = 70f;
     [Range(1, 10)][SerializeField] protected float _bulletLieftime = 3f;
     [SerializeField] protected int _maxAmmo;
+    protected FMODUnity.StudioEventEmitter _soundEmitter;
+
+
     [ContextMenu("Reload")]
     void resetAmmo()
     {
@@ -47,6 +50,7 @@ public class WeaponBehavior : MonoBehaviour
         _initialRotation = transform.rotation;
         _originalConstraints = _rb.constraints;
         _playerController = GameObject.FindWithTag(Tags.PLAYER).GetComponent<Controller>();
+        _soundEmitter = GetComponent<FMODUnity.StudioEventEmitter>();
     }
 
     void Update()

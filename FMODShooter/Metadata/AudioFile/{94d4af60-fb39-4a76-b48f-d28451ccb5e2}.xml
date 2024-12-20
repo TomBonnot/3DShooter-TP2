@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{94d4af60-fb39-4a76-b48f-d28451ccb5e2}">
+		<property name="assetPath">
+			<value>163458__lemudcrab__grenade-launcher.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.43569160997732426</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{8eedeea1-ddb0-4348-8a07-88777e9e0761}</destination>
+		</relationship>
+	</object>
+</objects>

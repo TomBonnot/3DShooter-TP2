@@ -14,6 +14,7 @@ public class BasicGunBehavior : WeaponBehavior
 
     public override void Shoot()
     {
+        _soundEmitter.Play();
         GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
         shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
         BasicProjectile projectile = new BasicProjectile(_bulletSpeed);
