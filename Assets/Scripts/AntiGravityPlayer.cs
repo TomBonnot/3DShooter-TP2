@@ -58,14 +58,16 @@ public class AntiGravityPlayer : MonoBehaviour
         _isGravityInverted = !_isGravityInverted;
 
         // Calculate new target rotation
-        if (_isGravityInverted)
-        {
-            TargetRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, 0f);
-        }
-        else
-        {
-            TargetRotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
-        }
+        float fixedYRotation = _isGravityInverted ? 180f : 0f;
+        TargetRotation = Quaternion.Euler(_isGravityInverted ? 180f : 0f, fixedYRotation, 0f);
+        //if (_isGravityInverted)
+        //{
+        //    TargetRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, 0f);
+        //}
+        //else
+        //{
+        //    TargetRotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
+        //}
 
         // Start rotation and temporarily disable player controls
         IsRotating = true;
