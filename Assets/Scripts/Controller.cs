@@ -375,9 +375,15 @@ public class Controller : MonoBehaviour
     {
         _isGrounded = false;
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(_col.bounds.center, Vector3.down, out hit, _col.bounds.extents.y + _groundCheckDistance))
+        Vector3 checkDirection = GetComponent<AntiGravityPlayer>().GetGroundCheckDirection();
+        if (Physics.Raycast(_col.bounds.center, checkDirection, out hit, _col.bounds.extents.y + _groundCheckDistance))
             if (hit.collider.CompareTag("Ground"))
                 _isGrounded = true;
+        //_isGrounded = false;
+        //RaycastHit hit = new RaycastHit();
+        //if (Physics.Raycast(_col.bounds.center, Vector3.down, out hit, _col.bounds.extents.y + _groundCheckDistance))
+        //    if (hit.collider.CompareTag("Ground"))
+        //        _isGrounded = true;
     }
 
     /**

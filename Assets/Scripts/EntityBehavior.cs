@@ -52,9 +52,13 @@ public abstract class EntityBehavior : MonoBehaviour
         foreach (var kvp in _childrenInitialStates)
         {
             Transform child = kvp.Key;
-            (Vector3 localPosition, Quaternion localRotation) = kvp.Value;
-            child.localPosition = localPosition;
-            child.localRotation = localRotation;
+            if (child != null)
+            {
+                (Vector3 localPosition, Quaternion localRotation) = kvp.Value;
+                child.localPosition = localPosition;
+                child.localRotation = localRotation;
+            }
+            
         }
         Controller _controller = GetComponent<Controller>();
         _controller.ResetLastMoveDirection();
