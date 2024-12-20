@@ -33,7 +33,7 @@ public class FlamethrowerBehavior : WeaponBehavior
     private void Propel()
     {
         // Hover boost
-        if (!weapon.expendsAmmo()) { destroyFlame(); return; }
+        if (!weapon.expendsAmmo()) { destroyFlame(); _playerController.dropDepletedWeapon(this); return; }
         Vector3 horizVector = boostHorizontally();
         Vector3 vertVector = boostVertically();
         playerRB.AddForce(horizVector + vertVector, ForceMode.Force);

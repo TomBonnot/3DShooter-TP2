@@ -187,7 +187,7 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 3442049671794490766, guid: 7c30b0ef2b5208944b31e6c4cb7f389c, type: 3}
   _bulletSpeed: 70
   _bulletLieftime: 3
-  _maxAmmo: 500
+  _maxAmmo: 1
   isEquipped: 0
   _jointMaxDistance: 0.8
   _jointMinDistance: 0.25

@@ -167,7 +167,6 @@ public class Controller : MonoBehaviour
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
-
     }
 
     private void clickInputs(WeaponBehavior weapon, InputAction input)
@@ -279,17 +278,16 @@ public class Controller : MonoBehaviour
 
         // This part of the method is to change if we let the player choose which arm to equip their weapon.
         // Has no impact on gameplay, alors jme suis pas cassé la tête.
-        if (!this._leftWeapon || (_isHoldingBasicLeft && !isBasic)) // Si tu as RIEN de equip (même pas un basicWeapon) OU tu tiens un basic gun et ne compte pas le remplacer par un autre basic gun
+        if (!this._leftWeapon || !this._leftWeapon.isActiveAndEnabled || (_isHoldingBasicLeft && !isBasic)) // Si tu as RIEN de equip (même pas un basicWeapon) OU tu tiens un basic gun et ne compte pas le remplacer par un autre basic gun
         {
-            Debug.Log("Trying to replace left weapon");
-            this._leftWeapon?.Drop(_isHoldingBasicLeft);
+            this._leftWeapon?.Drop();
             _isHoldingBasicLeft = isBasic;
             this._leftWeapon = weaponBehavior;
             this._leftWeapon.PickUp(_handleWeaponLeft);
         }
-        else if (!this._rightWeapon || (_isHoldingBasicRight && !isBasic))
+        else if (!this._rightWeapon || !this._rightWeapon.isActiveAndEnabled || (_isHoldingBasicRight && !isBasic))
         {
-            this._rightWeapon?.Drop(_isHoldingBasicRight);
+            this._rightWeapon?.Drop();
             _isHoldingBasicRight = isBasic;
             this._rightWeapon = weaponBehavior;
             this._rightWeapon.PickUp(_handleWeaponRight);
@@ -306,7 +304,7 @@ public class Controller : MonoBehaviour
         if (!_isHoldingBasicLeft)
         {
             WeaponBehavior basicWeapon = Instantiate(_basicWeaponPrefab).GetComponent<WeaponBehavior>();
-            this._leftWeapon?.Drop(_isHoldingBasicLeft);
+            this._leftWeapon?.Drop();
             _isHoldingBasicLeft = true;
             this._leftWeapon = basicWeapon;
             this._leftWeapon.PickUp(_handleWeaponLeft);
@@ -314,11 +312,17 @@ public class Controller : MonoBehaviour
         else if (!_isHoldingBasicRight)
         {
             WeaponBehavior basicWeapon = Instantiate(_basicWeaponPrefab).GetComponent<WeaponBehavior>();
-            this._rightWeapon?.Drop(_isHoldingBasicRight);
+            this._rightWeapon?.Drop();
             _isHoldingBasicRight = true;
             this._rightWeapon = basicWeapon;
             this._rightWeapon.PickUp(_handleWeaponRight);
         }
+    }
+
+    public void dropDepletedWeapon(WeaponBehavior weap)
+    {
+        weap.Drop();
+        equipBasicWeapon();
     }
 
     /**
@@ -409,7 +413,6 @@ public class Controller : MonoBehaviour
         if (col.CompareTag(Tags.WEAPON_SPAWNER))
         {
             WeaponBehavior weap = col.gameObject.GetComponentInChildren<WeaponBehavior>();
-            Debug.Log(weap.name);
             Pickup(false, weap);
         }
     }

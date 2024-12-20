@@ -19,7 +19,7 @@ public class GravityLauncherBehavior : WeaponBehavior
     // Manage the shooting behavior of the gun
     public override void Shoot()
     {
-        if (!weapon.expendsAmmo()) return;
+        if (!weapon.expendsAmmo()) { _playerController.dropDepletedWeapon(this); return; }
         _soundEmitter.Play();
         GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
         shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;

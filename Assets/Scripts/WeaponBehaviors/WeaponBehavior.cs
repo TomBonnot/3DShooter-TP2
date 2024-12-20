@@ -25,7 +25,7 @@ public class WeaponBehavior : MonoBehaviour
     [ContextMenu("Reload")]
     void resetAmmo()
     {
-        weapon.ammo = 2000;
+        weapon.ammo = _maxAmmo;
     }
 
 
@@ -99,14 +99,13 @@ public class WeaponBehavior : MonoBehaviour
     /**
     *   Simple method pubicly accessible (for Controller mainly) to drop the weapon
     **/
-    public void Drop(bool andDestroy)
+    public void Drop()
     {
         isEquipped = false;
         _rb.useGravity = true;
         _rb.constraints = _originalConstraints;
         transform.SetParent(null);
-        if (andDestroy)
-            Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 
     private void setRb()

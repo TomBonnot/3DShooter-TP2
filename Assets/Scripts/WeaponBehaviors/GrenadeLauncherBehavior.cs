@@ -26,7 +26,7 @@ public class GrenadeLauncherBehavior : WeaponBehavior
         // If there is no grenade that's been launched by the grenade launcher
         if (_activeGrenade == null)
         {
-            if (!weapon.expendsAmmo()) return;
+            if (!weapon.expendsAmmo()) { _playerController.dropDepletedWeapon(this); return; }
             _soundEmitter.Play();
             _activeGrenade = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
             _activeGrenade.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
