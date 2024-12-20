@@ -191,7 +191,8 @@ public class Controller : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit playerHit, Mathf.Infinity, LayerMask.GetMask("Player")))
         {
-            targeted.targetPoint = new Vector3(transform.position.x, transform.position.y - 10, transform.position.z);
+            int _gravityValue = GetComponent<AntiGravityPlayer>().IsGravityInverted ? 10 : -10;
+            targeted.targetPoint = new Vector3(transform.position.x, transform.position.y + _gravityValue, transform.position.z);
         }
         // Perform a raycast
         else if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player")))

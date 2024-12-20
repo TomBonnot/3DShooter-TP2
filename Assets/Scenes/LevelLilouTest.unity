@@ -1519,6 +1519,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Robot_Ennemy_Range
       objectReference: {fileID: 0}
+    - target: {fileID: 5217323731296270331, guid: 1bf8aa0551fb71549ba225e18f3c9faf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

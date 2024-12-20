@@ -4,7 +4,7 @@ public class AntiGravityPlayer : MonoBehaviour
 {
     private Rigidbody _rb;
     private Controller _controller;
-    private bool _isGravityInverted;
+    public bool IsGravityInverted { get; private set; }
     private float _gravityForce = 9.8f;
     private float _rotationSpeed = 8f; // Adjust to control rotation speed
 
@@ -15,14 +15,14 @@ public class AntiGravityPlayer : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _controller = GetComponent<Controller>();
-        _isGravityInverted = false;
+        IsGravityInverted = false;
         TargetRotation = Quaternion.identity;
         GameManager.Instance.OnReloadLevel += ResetNormalGravity;
     }
 
     private void FixedUpdate()
     {
-        if (_isGravityInverted)
+        if (IsGravityInverted)
         {
             // Apply inverse gravity
             _rb.AddForce(Vector3.up * _gravityForce * 2f, ForceMode.Acceleration);
@@ -47,19 +47,19 @@ public class AntiGravityPlayer : MonoBehaviour
 
     private void ResetNormalGravity()
     {
-        if (_isGravityInverted)
+        if (IsGravityInverted)
         {
-            _isGravityInverted = false;
+            IsGravityInverted = false;
         }
     }
 
     public void ChangeGravity()
     {
-        _isGravityInverted = !_isGravityInverted;
+        IsGravityInverted = !IsGravityInverted;
 
         // Calculate new target rotation
-        float fixedYRotation = _isGravityInverted ? 180f : 0f;
-        TargetRotation = Quaternion.Euler(_isGravityInverted ? 180f : 0f, fixedYRotation, 0f);
+        float fixedYRotation = IsGravityInverted ? 180f : 0f;
+        TargetRotation = Quaternion.Euler(IsGravityInverted ? 180f : 0f, fixedYRotation, 0f);
         //if (_isGravityInverted)
         //{
         //    TargetRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, 0f);
@@ -78,7 +78,7 @@ public class AntiGravityPlayer : MonoBehaviour
     }
     public Vector3 GetGroundCheckDirection()
     {
-        return _isGravityInverted ? Vector3.up : Vector3.down;
+        return IsGravityInverted ? Vector3.up : Vector3.down;
     }
 
     private void OnDisable()
