@@ -41,4 +41,9 @@ public class GrenadeLauncherBehavior : WeaponBehavior
             _activeGrenade = null;
         }
     }
+
+    public override string representName()
+    {
+        return "Grenade Launcher";
+    }
 }

@@ -26,7 +26,14 @@ public class GrenadeBehavior : ProjectileBehavior
             if (_rbHit != null)
             {
                 // Apply explosion force to every objects in the zone
-                _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion);
+                // if (_rbHit.CompareTag(Tags.PLAYER))
+                // {
+
+                // }
+                // else
+                // {
+                    _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion, 1);
+                //}
             }
 
             // Check if the hit object is an enemy

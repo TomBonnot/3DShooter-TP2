@@ -23,4 +23,14 @@ public class BasicGunBehavior : WeaponBehavior
         BasicProjectile projectile = new BasicProjectile(_bulletSpeed);
         Destroy(shotProjectile, _bulletLieftime);
     }
+
+    public override string representAmmo()
+    {
+        return "Math.Inf";
+    }
+
+    public override string representName()
+    {
+        return "Nail Gun";
+    }
 }

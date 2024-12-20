@@ -29,4 +29,9 @@ public class GravityLauncherBehavior : WeaponBehavior
 
         Destroy(shotProjectile, _bulletLieftime);
     }
+
+    public override string representName()
+    {
+        return "Gravity Inverter";
+    }
 }

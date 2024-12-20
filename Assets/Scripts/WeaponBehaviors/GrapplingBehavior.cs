@@ -109,4 +109,8 @@ public class GrapplingBehavior : WeaponBehavior
         _lr.SetPosition(0, weapon.gunPoint.transform.position);
         _lr.SetPosition(1, _shotGrapple.transform.position);
     }
+    public override string representName()
+    {
+        return "Grappling Hook";
+    }
 }

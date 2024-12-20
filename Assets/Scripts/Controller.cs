@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Runtime;
+using TMPro;
+using Tripolygon.UModelerX.Runtime;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -59,6 +61,12 @@ public class Controller : MonoBehaviour
     public InputAction rush;
     public InputAction dodgeRoll;
     public InputAction restartLevel;
+    public InputAction lookBackwards;
+    [Header("Weapon Display Section")]
+    public TMP_Text leftWeaponNameText;
+    public TMP_Text rightWeaponNameText;
+    public TMP_Text leftWeaponAmmoText;
+    public TMP_Text rightWeaponAmmoText;
 
     //Not needed to be visible in the Editor
     private Vector3 _localMove = Vector3.zero;
@@ -70,7 +78,7 @@ public class Controller : MonoBehaviour
 
     private bool _isHoldingBasicLeft;
     private bool _isHoldingBasicRight;
-    private int _hp;
+    public bool IsLookingBack { get; private set; }
 
     void Awake()
     {
@@ -85,6 +93,7 @@ public class Controller : MonoBehaviour
         targeted = new Targeted();
         targeted.target = this.gameObject;
         targeted.targetPoint = Vector3.zero;
+        IsLookingBack = false;
 
         // On commence avec deux guns standards
         equipBasicWeapon();
@@ -102,6 +111,7 @@ public class Controller : MonoBehaviour
         rush.Enable();
         dodgeRoll.Enable();
         restartLevel.Enable();
+        lookBackwards.Enable();
 
 
     }
@@ -135,6 +145,8 @@ public class Controller : MonoBehaviour
             GameManager.Instance.PauseGame();
         }
 
+        manageDisplays();
+
         //If inputs are available, handle every inputs inside
         if (_playerInputEnable)
         {
@@ -161,6 +173,24 @@ public class Controller : MonoBehaviour
             {
                 EnableDisablePlayerControls();
                 GameManager.Instance.RestartLevel();
+                Drop();
+                Drop();
+            }
+            if (lookBackwards.WasPressedThisFrame())
+            {
+                IsLookingBack = !IsLookingBack;
+                if (IsLookingBack)
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                else
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                if (GetComponent<AntiGravityPlayer>().IsGravityInverted)
+                {
+                    transform.rotation = Quaternion.Euler(180f, 0, 0);
+                }
+                else
+                {
+
+                }
             }
             LookAtTarget();
         }
@@ -178,6 +208,21 @@ public class Controller : MonoBehaviour
             weapon.ShootHeld();
         if (input.WasReleasedThisFrame() && weapon != null)
             weapon.ReleaseShoot();
+    }
+
+    private void manageDisplays()
+    {
+        if (this._leftWeapon)
+        {
+            this.leftWeaponNameText.text = this._leftWeapon.representName();
+            this.leftWeaponAmmoText.text = this._leftWeapon.representAmmo();
+        }
+        if (this._rightWeapon)
+        {
+            this.rightWeaponNameText.text = this._rightWeapon.representName();
+            this.rightWeaponAmmoText.text = this._rightWeapon.representAmmo();
+        }
+
     }
 
     private void getHovered()
@@ -297,7 +342,7 @@ public class Controller : MonoBehaviour
     /**
     *   if main weapon is null, return, else drop it
     **/
-    private void Drop()
+    public void Drop()
     {
         // Pourquoi au lieu de ça je peux pas juste drop ensuite call la méthode Pickup avec un nouveau basic weapon?
         // Je sais pas, alors on a un peu de code duplication
@@ -413,7 +458,8 @@ public class Controller : MonoBehaviour
         if (col.CompareTag(Tags.WEAPON_SPAWNER))
         {
             WeaponBehavior weap = col.gameObject.GetComponentInChildren<WeaponBehavior>();
-            Pickup(false, weap);
+            if (weap)
+                Pickup(false, weap);
         }
     }
 

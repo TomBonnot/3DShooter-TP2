@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     // Reference to the player GameObject
     private GameObject player;
+    private Controller _playerController;
 
     // Internal state variables
     private bool _isGamePaused;
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
     private int _pointsPerKill;
     private int _timeMultiplierFactor;
 
-    
+
 
     private void Awake()
     {
@@ -63,7 +64,7 @@ public class GameManager : MonoBehaviour
         _baseTimeMultiplier = 10f;
         _pointsPerKill = 100;
         _timeMultiplierFactor = 10;
-        
+
         _isGamePaused = false;
         _isPlaying = false;
         _firstTime = false;
@@ -99,6 +100,8 @@ public class GameManager : MonoBehaviour
     private void CheckForPlayer()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        if (player)
+            _playerController = player.GetComponent<Controller>();
     }
 
     /**
@@ -144,10 +147,11 @@ public class GameManager : MonoBehaviour
 
         OnReloadEnemies?.Invoke();
         OnLevelCompleted?.Invoke(false, 0);
-
+        _playerController.Drop();
+        _playerController.Drop();
         Time.timeScale = 1f;
         OnReloadLevel?.Invoke();
-
+        player.GetComponent<Controller>().Drop();
         BeginGame();
     }
 
@@ -156,12 +160,12 @@ public class GameManager : MonoBehaviour
     **/
     public void LoadScene(string _sceneName)
     {
-        if(Instance == this)
+        if (Instance == this)
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(_sceneName);
         }
-        
+
     }
 
     /**
@@ -169,19 +173,19 @@ public class GameManager : MonoBehaviour
     **/
     public void PauseGame()
     {
-        _isGamePaused = !_isGamePaused;       
+        _isGamePaused = !_isGamePaused;
 
         if (_isGamePaused)
         {
             // Pause the game
-            Time.timeScale = 0f; 
+            Time.timeScale = 0f;
         }
         else
         {
             // Resume the game
             Time.timeScale = 1f;
 
-            
+
         }
         OnGamePaused?.Invoke(_isGamePaused);
     }

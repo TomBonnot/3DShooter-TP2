@@ -128,4 +128,14 @@ public class WeaponBehavior : MonoBehaviour
     {
         GameManager.Instance.OnReloadLevel -= ResetState;
     }
+
+    public virtual string representAmmo()
+    {
+        return weapon.ammo + " / " + _maxAmmo;
+    }
+
+    public virtual string representName()
+    {
+        return this.name;
+    }
 }

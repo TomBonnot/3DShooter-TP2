@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponType: {fileID: 0}
   anchor: {fileID: 4018600183002545042}
+  weaponRespawnTimer: 5
 --- !u!1 &5335943998006232912
 GameObject:
   m_ObjectHideFlags: 0

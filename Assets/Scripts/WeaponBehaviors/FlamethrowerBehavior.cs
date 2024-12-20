@@ -26,6 +26,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     public override void Shoot()
     {
+        if (!weapon.expendsAmmo()) { destroyFlame(); _playerController.dropDepletedWeapon(this); return; }
         _soundEmitter.Play();
         flame = Instantiate(_projectilePrefab, weapon.gunPoint.transform);
         _isShooting = true;
@@ -53,6 +54,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     private void destroyFlame()
     {
+        _soundEmitter.Stop();
         _isShooting = false;
         if (flame)
             Destroy(flame);
@@ -66,5 +68,10 @@ public class FlamethrowerBehavior : WeaponBehavior
     private Vector3 boostHorizontally()
     {
         return new Vector3(weapon.gunPoint.transform.up.x, 0, weapon.gunPoint.transform.up.z) * -1 * flamethrower.getHotizontalBoostStrength();
+    }
+
+    public override string representName()
+    {
+        return "Flamethrower";
     }
 }
