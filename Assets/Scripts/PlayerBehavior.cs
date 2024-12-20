@@ -16,6 +16,10 @@ public class PlayerBehavior : EntityBehavior
         {
             GameManager.Instance.LevelCompleted();
         }
+        else if(other.gameObject.tag == "Fall")
+        {
+            Die();
+        }
     }
 
     protected override void Die()

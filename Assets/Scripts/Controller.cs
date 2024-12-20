@@ -42,6 +42,11 @@ public class Controller : MonoBehaviour
     [SerializeField] private WeaponBehavior _rightWeapon;
     [SerializeField] private GameObject _basicWeaponPrefab;
 
+    [Header("Moving and looking Section")]
+    [SerializeField] private GameObject _topBody;
+    [SerializeField] private GameObject _lowBody;
+    private Vector3 _lastMoveDirection = Vector3.zero;
+
     //Input action section, has to be public or can be private with a SerializeField statement
     [Header("Input Section")]
     public InputAction move;
@@ -98,6 +103,8 @@ public class Controller : MonoBehaviour
         rush.Enable();
         dodgeRoll.Enable();
         restartLevel.Enable();
+
+        
     }
 
     private void equipBasicWeapon()
@@ -113,7 +120,7 @@ public class Controller : MonoBehaviour
         // Cursor.lockState = CursorLockMode.Locked;
         _sqrMaxVelocity = _maxVelocity * _maxVelocity;
 
-        //GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
+        GameManager.Instance.OnGameOver += EnableDisablePlayerControls;
         GameManager.Instance.OnEnableDisableControllerPlayer += EnableDisablePlayerControls;
     }
 
@@ -153,12 +160,15 @@ public class Controller : MonoBehaviour
                 Dodge();
             if (restartLevel.WasPressedThisFrame())
             {
+                EnableDisablePlayerControls();
                 GameManager.Instance.RestartLevel();
             }
+            LookAtTarget();
         }
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
+        
     }
 
     private void clickInputs(WeaponBehavior weapon, InputAction input)
@@ -186,6 +196,19 @@ public class Controller : MonoBehaviour
             targeted.target = hit.collider.gameObject;
             targeted.targetPoint = hit.point;
         }
+    }
+
+    private void LookAtTarget()
+    {
+        // Vérifiez si la cible est un enfant de TopBody
+        if (targeted.target.transform.IsChildOf(_topBody.transform))
+        {
+            // Redirigez le regard vers un point par défaut ou continuez à regarder la position précédente
+            return;
+        }
+
+        // Appliquez le LookAt normalement si la cible est valide
+        _topBody.transform.LookAt(this.getTargeted().targetPoint);
     }
 
     /**
@@ -321,7 +344,22 @@ public class Controller : MonoBehaviour
             _col.material.dynamicFriction = 0f;
             _col.material.frictionCombine = PhysicsMaterialCombine.Average;
         }
+        if(_moveDirection != Vector3.zero)
+        {
+            _lastMoveDirection = _moveDirection;
+        }
+        if(_lastMoveDirection != Vector3.zero)
+        {
+            Quaternion _targetRotation = Quaternion.LookRotation(_lastMoveDirection);
+            _lowBody.transform.localRotation = Quaternion.Slerp(_lowBody.transform.localRotation, _targetRotation, 10 * Time.deltaTime);
+        }
+
         _rb.AddForce(new Vector3(_localMove.x * _moveSpeed * Time.deltaTime, 0, _localMove.z * _moveSpeed * Time.deltaTime));
+    }
+
+    public void ResetLastMoveDirection()
+    {
+        _lastMoveDirection = Vector3.zero;
     }
 
     private void setLocalMove()
@@ -337,9 +375,15 @@ public class Controller : MonoBehaviour
     {
         _isGrounded = false;
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(_col.bounds.center, Vector3.down, out hit, _col.bounds.extents.y + _groundCheckDistance))
+        Vector3 checkDirection = GetComponent<AntiGravityPlayer>().GetGroundCheckDirection();
+        if (Physics.Raycast(_col.bounds.center, checkDirection, out hit, _col.bounds.extents.y + _groundCheckDistance))
             if (hit.collider.CompareTag("Ground"))
                 _isGrounded = true;
+        //_isGrounded = false;
+        //RaycastHit hit = new RaycastHit();
+        //if (Physics.Raycast(_col.bounds.center, Vector3.down, out hit, _col.bounds.extents.y + _groundCheckDistance))
+        //    if (hit.collider.CompareTag("Ground"))
+        //        _isGrounded = true;
     }
 
     /**
@@ -357,7 +401,7 @@ public class Controller : MonoBehaviour
 
     private void OnDisable()
     {
-        //GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
+        GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;
         GameManager.Instance.OnEnableDisableControllerPlayer -= EnableDisablePlayerControls;
     }
 

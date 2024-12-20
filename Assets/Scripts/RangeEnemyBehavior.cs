@@ -3,12 +3,13 @@ using UnityEngine;
 public class RangeEnemyBehavior : EnemyBehavior
 {
     // References for the range attack system
-    [SerializeField] private GameObject _camera;
+    [SerializeField] private GameObject _target;
     [SerializeField] private GameObject _gun;
     [SerializeField] private GameObject _gunPoint;
     [SerializeField] private GameObject _projectile;
+    [SerializeField] private GameObject _topBody;
     [SerializeField] private float _bulletSpeed;
-    [SerializeField] private float _reloadTime = 1f;
+    [SerializeField] private float _reloadTime = 2f;
     // Delay before the first shot after spotting the player
     private float _delayOnSight;
     // Tracks the next allowable attack time
@@ -65,7 +66,7 @@ public class RangeEnemyBehavior : EnemyBehavior
         Vector3 _upDirection = _antiGravityEnemy.IsGravityInverted ? Vector3.down : Vector3.up;
 
         // Rotate the enemy to face the player, considering the gravity direction
-        transform.LookAt(_player.transform, _upDirection);
+        _topBody.transform.LookAt(_player.transform, _upDirection);
     }
 
     protected override void AttackPlayer()
@@ -74,7 +75,7 @@ public class RangeEnemyBehavior : EnemyBehavior
         _timeStamp = Time.time + _reloadTime;
         // Shoot the projectile in the player direction
         GameObject _shotProjectile = Instantiate(_projectile, _gunPoint.transform.position, _gun.transform.rotation);
-        Vector3 _projectileDirection = (_camera.transform.position - _gunPoint.transform.position).normalized;
+        Vector3 _projectileDirection = (_target.transform.position - _gunPoint.transform.position).normalized;
         _shotProjectile.GetComponent<Rigidbody>().linearVelocity = _projectileDirection * _bulletSpeed;
         Destroy(_shotProjectile, 3f);
     }

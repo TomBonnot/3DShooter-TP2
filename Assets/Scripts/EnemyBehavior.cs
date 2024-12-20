@@ -9,7 +9,7 @@ public abstract class EnemyBehavior : EntityBehavior
     [SerializeField] float _visionRange;
     protected virtual void Start()
     {
-        _player = GameObject.Find("Player");
+        _player = GameObject.FindGameObjectWithTag("Player");
         _playerController = _player.GetComponent<Controller>();
         _playerJustSpotted = false;
     }

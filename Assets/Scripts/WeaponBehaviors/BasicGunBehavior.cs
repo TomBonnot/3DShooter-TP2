@@ -14,8 +14,11 @@ public class BasicGunBehavior : WeaponBehavior
 
     public override void Shoot()
     {
-        GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
-        shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;
+        // Get the direction from gun point to target
+        Vector3 shootDirection = (_playerController.getTargeted().targetPoint - weapon.gunPoint.transform.position).normalized;
+
+        GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, Quaternion.LookRotation(shootDirection));
+        shotProjectile.GetComponent<Rigidbody>().linearVelocity = shootDirection * _bulletSpeed;
         BasicProjectile projectile = new BasicProjectile(_bulletSpeed);
         Destroy(shotProjectile, _bulletLieftime);
     }
