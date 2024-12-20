@@ -11,7 +11,7 @@ public class GravityLauncherBehavior : WeaponBehavior
     [SerializeField] protected GameObject _explosion_prefab;
 
     void Awake()
-    {        
+    {
         // Assign the right weapon
         this.weapon = new GravityLauncher(_weaponPrefab, _gunPoint, _maxAmmo);
     }
@@ -19,6 +19,7 @@ public class GravityLauncherBehavior : WeaponBehavior
     // Manage the shooting behavior of the gun
     public override void Shoot()
     {
+        if (!weapon.expendsAmmo()) return;
         _soundEmitter.Play();
         GameObject shotProjectile = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, weapon.weaponObject.transform.rotation);
         shotProjectile.GetComponent<Rigidbody>().linearVelocity = _gunPoint.transform.up * _bulletSpeed;

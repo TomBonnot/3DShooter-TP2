@@ -97,13 +97,13 @@ public class Controller : MonoBehaviour
         jump.Enable();
         shootLeft.Enable();
         shootRight.Enable();
-        pickup.Enable();
+        //pickup.Enable();
         drop.Enable();
         rush.Enable();
         dodgeRoll.Enable();
         restartLevel.Enable();
 
-        
+
     }
 
     private void equipBasicWeapon()
@@ -167,7 +167,7 @@ public class Controller : MonoBehaviour
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
-        
+
     }
 
     private void clickInputs(WeaponBehavior weapon, InputAction input)
@@ -195,7 +195,7 @@ public class Controller : MonoBehaviour
             targeted.targetPoint = new Vector3(transform.position.x, transform.position.y + _gravityValue, transform.position.z);
         }
         // Perform a raycast
-        else if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player")))
+        else if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~LayerMask.GetMask("Player", "Ignore Raycast")))
         {
             targeted.target = hit.collider.gameObject;
             targeted.targetPoint = hit.point;
@@ -271,16 +271,17 @@ public class Controller : MonoBehaviour
     private void Pickup(bool isBasic, WeaponBehavior weaponBehavior = null)
     {
         // if we are not looking at a weapon AND we are not forcing a weapon equip
-        if (!targeted.target.CompareTag(Tags.WEAPON) && weaponBehavior == null) return;
+        // if (!targeted.target.CompareTag(Tags.WEAPON) && weaponBehavior == null) return;
 
         // Si on regarde pas un weapon ou on en set pas un explicitement
-        if (weaponBehavior == null)
-            weaponBehavior = targeted.target.GetComponent<WeaponBehavior>();
+        // if (weaponBehavior == null)
+        //     weaponBehavior = targeted.target.GetComponent<WeaponBehavior>();
 
         // This part of the method is to change if we let the player choose which arm to equip their weapon.
         // Has no impact on gameplay, alors jme suis pas cassé la tête.
         if (!this._leftWeapon || (_isHoldingBasicLeft && !isBasic)) // Si tu as RIEN de equip (même pas un basicWeapon) OU tu tiens un basic gun et ne compte pas le remplacer par un autre basic gun
         {
+            Debug.Log("Trying to replace left weapon");
             this._leftWeapon?.Drop(_isHoldingBasicLeft);
             _isHoldingBasicLeft = isBasic;
             this._leftWeapon = weaponBehavior;
@@ -348,11 +349,11 @@ public class Controller : MonoBehaviour
             _col.material.dynamicFriction = 0f;
             _col.material.frictionCombine = PhysicsMaterialCombine.Average;
         }
-        if(_moveDirection != Vector3.zero)
+        if (_moveDirection != Vector3.zero)
         {
             _lastMoveDirection = _moveDirection;
         }
-        if(_lastMoveDirection != Vector3.zero)
+        if (_lastMoveDirection != Vector3.zero)
         {
             Quaternion _targetRotation = Quaternion.LookRotation(_lastMoveDirection);
             _lowBody.transform.localRotation = Quaternion.Slerp(_lowBody.transform.localRotation, _targetRotation, 10 * Time.deltaTime);
@@ -403,6 +404,23 @@ public class Controller : MonoBehaviour
         _playerInputEnable = !_playerInputEnable;
     }
 
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag(Tags.WEAPON_SPAWNER))
+        {
+            WeaponBehavior weap = col.gameObject.GetComponentInChildren<WeaponBehavior>();
+            Debug.Log(weap.name);
+            Pickup(false, weap);
+        }
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+        if (col.CompareTag(Tags.WEAPON_SPAWNER))
+        {
+            col.gameObject.GetComponent<WeaponSpawnerBehavior>().resetWeapon();
+        }
+    }
     private void OnDisable()
     {
         GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;

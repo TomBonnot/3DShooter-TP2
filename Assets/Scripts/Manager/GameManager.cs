@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         
         _isGamePaused = false;
         _isPlaying = false;
-        _firstTime = true;
+        _firstTime = false;
         CheckForPlayer();
         // If the player is in the scene and this is the first time, start the countdown
         if (IsPlayerInScene() && _firstTime)
