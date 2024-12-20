@@ -336,12 +336,14 @@ MonoBehaviour:
   _rushMoveSpeed: 2000
   _dodgeSpeed: 50
   _dodgeTime: 0.5
+  _initialBoostSpeed: 0
   _distancePickUp: 2.5
   _handleWeaponLeft: {fileID: 6646415141100562858}
   _handleWeaponRight: {fileID: 7728247863964297301}
   _leftWeapon: {fileID: 0}
   _rightWeapon: {fileID: 0}
   _basicWeaponPrefab: {fileID: 5481806681854067734, guid: 8a33ff57f789e7d429f9480911840075, type: 3}
+  _topBody: {fileID: 0}
   move:
     m_Name: Move
     m_Type: 0
@@ -551,6 +553,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Dodge Roll
       m_Flags: 0
+    m_Flags: 0
+  restartLevel:
+    m_Name: Restart Level
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b9fc940b-ddcb-49be-873a-4c7f17fa3faf
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
 --- !u!120 &419056920664481383
 LineRenderer:

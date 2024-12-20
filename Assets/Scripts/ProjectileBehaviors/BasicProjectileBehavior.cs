@@ -15,6 +15,8 @@ public class BasicProjectileBehavior : ProjectileBehavior
         else if (collision.gameObject.GetComponent<EnemyBehavior>() != null)
         {
             collision.gameObject.GetComponent<EnemyBehavior>().EnemyKilled();
+            Destroy(gameObject);
         }
+        
     }
 }

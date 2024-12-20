@@ -23,9 +23,20 @@ public abstract class EntityBehavior : MonoBehaviour
 
         // Save initial local positions and rotations of all children
         _childrenInitialStates = new Dictionary<Transform, (Vector3, Quaternion)>();
-        foreach (Transform child in transform)
+        SaveChildrenStates(transform);
+    }
+
+    /*
+    *   Recursively save states of all children
+    */
+    private void SaveChildrenStates(Transform parent)
+    {
+        foreach (Transform child in parent)
         {
+            // Save the current child's state
             _childrenInitialStates[child] = (child.localPosition, child.localRotation);
+            // Recursively save states of this child's children
+            SaveChildrenStates(child);
         }
     }
 
@@ -41,16 +52,16 @@ public abstract class EntityBehavior : MonoBehaviour
         foreach (var kvp in _childrenInitialStates)
         {
             Transform child = kvp.Key;
-            (Vector3 localPosition, Quaternion localRotation) = kvp.Value;
-            child.localPosition = localPosition;
-            child.localRotation = localRotation;
+            if (child != null)
+            {
+                (Vector3 localPosition, Quaternion localRotation) = kvp.Value;
+                child.localPosition = localPosition;
+                child.localRotation = localRotation;
+            }
+            
         }
-
-        Controller controller = GetComponent<Controller>();
-        if (controller != null)
-        {
-            //controller.ResetCameraRotation();
-        }
+        Controller _controller = GetComponent<Controller>();
+        _controller.ResetLastMoveDirection();
     }
 
     protected virtual void Die()
