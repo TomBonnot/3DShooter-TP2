@@ -41,6 +41,7 @@ public class Controller : MonoBehaviour
     [SerializeField] private WeaponBehavior _leftWeapon;
     [SerializeField] private WeaponBehavior _rightWeapon;
     [SerializeField] private GameObject _basicWeaponPrefab;
+    [SerializeField] private GameObject _topBody;
 
     //Input action section, has to be public or can be private with a SerializeField statement
     [Header("Input Section")]
@@ -159,6 +160,7 @@ public class Controller : MonoBehaviour
 
         //Methods called on each frame to handle various mechanics 
         IsGrounded();
+        LookAtTarget();
     }
 
     private void clickInputs(WeaponBehavior weapon, InputAction input)
@@ -186,6 +188,19 @@ public class Controller : MonoBehaviour
             targeted.target = hit.collider.gameObject;
             targeted.targetPoint = hit.point;
         }
+    }
+
+    private void LookAtTarget()
+    {
+        // Vérifiez si la cible est un enfant de TopBody
+        if (targeted.target.transform.IsChildOf(_topBody.transform))
+        {
+            // Redirigez le regard vers un point par défaut ou continuez à regarder la position précédente
+            return;
+        }
+
+        // Appliquez le LookAt normalement si la cible est valide
+        _topBody.transform.LookAt(this.getTargeted().targetPoint);
     }
 
     /**

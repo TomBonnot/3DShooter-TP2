@@ -51,10 +51,10 @@ public class WeaponBehavior : MonoBehaviour
 
     void Update()
     {
-        if (isEquipped)
-        {
-            transform.LookAt(_playerController.getTargeted().targetPoint);
-        }
+        //if (isEquipped)
+        //{
+        //    transform.LookAt(_playerController.getTargeted().targetPoint);
+        //}
     }
 
     /**
