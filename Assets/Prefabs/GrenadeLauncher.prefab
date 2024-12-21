@@ -190,7 +190,7 @@ MonoBehaviour:
   _maxAmmo: 5
   isEquipped: 0
   _radiusExplosion: 3
-  _explosionForce: 550
+  _explosionForce: 600
   _explosion_prefab: {fileID: 5811022468016898313, guid: 1ab44761efaa65443962c9396a1d731c, type: 3}
 --- !u!114 &-5096565701676396333
 MonoBehaviour:

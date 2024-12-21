@@ -13,19 +13,23 @@ public abstract class EntityBehavior : MonoBehaviour
     // Dictionary to store initial local positions and rotations of all children
     private Dictionary<Transform, (Vector3 localPosition, Quaternion localRotation)> _childrenInitialStates;
 
-    private void Start()
+    protected virtual void Start()
     {
         GameManager.Instance.OnReloadLevel += ResetState;
-
         // Save initial position
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
-        _initialRigidbody = GetComponent<Rigidbody>();
-        Debug.Log((_initialRigidbody == null).ToString());
+
         // Save initial local positions and rotations of all children
         _childrenInitialStates = new Dictionary<Transform, (Vector3, Quaternion)>();
         SaveChildrenStates(transform);
+
     }
+
+    // private void OnEnable()
+    // {
+    //     GameManager.Instance.OnReloadLevel += ResetState;
+    // }
 
     /*
     *   Recursively save states of all children
@@ -44,10 +48,11 @@ public abstract class EntityBehavior : MonoBehaviour
     // Reset the entity to it's initial position and rotation
     public void ResetState()
     {
+        Debug.Log(this.name);
         transform.position = _initialPosition;
         transform.rotation = _initialRotation;
-        Debug.Log((_initialRigidbody == null).ToString());
 
+        _initialRigidbody = GetComponent<Rigidbody>();
         _initialRigidbody.linearVelocity = Vector3.zero;
         _initialRigidbody.angularVelocity = Vector3.zero;
 
@@ -64,7 +69,7 @@ public abstract class EntityBehavior : MonoBehaviour
 
         }
         Controller _controller = GetComponent<Controller>();
-        _controller.ResetLastMoveDirection();
+        _controller?.ResetLastMoveDirection();
     }
 
     protected virtual void Die()

@@ -21,22 +21,38 @@ public class Flamethrower : Weapon
         this._baseVerticalBoostStrength = baseVerticalBoostStrength;
     }
 
-    public float getVerticalBoostStrength(Vector3 playerLinearVel)
+    public float getVerticalBoostStrength(Vector3 playerLinearVel, bool isUpsideDown)
     {
         // For hover effect
         // If player is looking straight down - hover
         // If the player wants to move - you're gonna lose some altitude
-        if (playerLinearVel.y > 0 || gunPoint.transform.up.y >= 0)
+        if (!isUpsideDown)
         {
-            // player ascending or player facing up - boost normally
-            return -_verticalBoostStrength;
+            if (playerLinearVel.y > 0 || gunPoint.transform.up.y >= 0)
+            {
+                // player ascending or player facing up - boost normally
+                return -_verticalBoostStrength;
+            }
+            // If the player is looking straight down - hover without gaining height
+            // Otherwise the player will lose height proportionally to how horizontally they are looking
+            // Debug.Log(gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength));
+            float boostStrength = (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * _verticalBoostStrength) + _baseVerticalBoostStrength);
+            return boostStrength;
         }
-        // If the player is looking straight down - hover without gaining height
-        // Otherwise the player will lose height proportionally to how horizontally they are looking
-        Debug.Log(gunPoint.transform.up.y + " " + playerLinearVel.y + " " + _verticalBoostStrength + " " + _baseVerticalBoostStrength);
-        // Debug.Log(gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength));
-        float boostStrength = (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * _verticalBoostStrength) + _baseVerticalBoostStrength);
-        return boostStrength;
+        else
+        {
+            if (playerLinearVel.y < 0 || gunPoint.transform.up.y <= 0)
+            {
+                // player ascending or player facing up - boost normally
+                return _verticalBoostStrength;
+            }
+            // If the player is looking straight down - hover without gaining height
+            // Otherwise the player will lose height proportionally to how horizontally they are looking
+            // Debug.Log(gunPoint.transform.up.y * (playerLinearVel.y * _verticalBoostStrength + _baseVerticalBoostStrength));
+            float boostStrength = (Math.Abs(gunPoint.transform.up.y) * (Math.Abs(playerLinearVel.y) * -_verticalBoostStrength) - _baseVerticalBoostStrength);
+            return boostStrength;
+
+        }
     }
 
     public float getHotizontalBoostStrength()

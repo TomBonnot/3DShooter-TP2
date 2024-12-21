@@ -7,7 +7,6 @@ public class BasicProjectileBehavior : ProjectileBehavior
 
     protected void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
         if (collision.gameObject.GetComponent<EnemyBehavior>() != null)
         {
             collision.gameObject.GetComponent<EnemyBehavior>().EnemyKilled();

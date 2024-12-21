@@ -281,7 +281,7 @@ public class Controller : MonoBehaviour
     private void LookAtTarget()
     {
         // Vérifiez si la cible est un enfant de TopBody
-        if (targeted.target.transform.IsChildOf(_topBody.transform))
+        if (targeted.target && targeted.target.transform.IsChildOf(_topBody.transform))
         {
             // Redirigez le regard vers un point par défaut ou continuez à regarder la position précédente
             return;
@@ -519,5 +519,10 @@ public class Controller : MonoBehaviour
     public Targeted getTargeted()
     {
         return targeted;
+    }
+
+    public bool getIsInvertedGravity()
+    {
+        return GetComponent<AntiGravityPlayer>().IsGravityInverted;
     }
 }

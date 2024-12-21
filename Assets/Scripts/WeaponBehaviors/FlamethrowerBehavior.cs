@@ -62,7 +62,7 @@ public class FlamethrowerBehavior : WeaponBehavior
 
     private Vector3 boostVertically()
     {
-        return new Vector3(0, flamethrower.getVerticalBoostStrength(playerRB.linearVelocity), 0);
+        return new Vector3(0, flamethrower.getVerticalBoostStrength(playerRB.linearVelocity, _playerController.getIsInvertedGravity()), 0);
     }
 
     private Vector3 boostHorizontally()

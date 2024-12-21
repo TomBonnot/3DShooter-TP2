@@ -7,8 +7,9 @@ public abstract class EnemyBehavior : EntityBehavior
     protected Controller _playerController;
     protected bool _playerJustSpotted;
     [SerializeField] float _visionRange;
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         _player = GameObject.FindGameObjectWithTag("Player");
         _playerController = _player.GetComponent<Controller>();
         _playerJustSpotted = false;
