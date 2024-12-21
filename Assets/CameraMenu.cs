@@ -25,6 +25,7 @@ public class CameraMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Check if the position required has changed ad store it as a target
         if(cameraPosition == CameraPosition.MAIN)
             _targetPosition = mainPosition;
         if(cameraPosition == CameraPosition.PLAY)
@@ -32,12 +33,14 @@ public class CameraMenu : MonoBehaviour
         if(cameraPosition == CameraPosition.OPTION)
             _targetPosition = optionPosition;
         
+        //Calculate distance and angle to be traveled
         _distanceToTarget = Vector3.Distance(transform.position, _targetPosition.position);
         _angleToTarget = Quaternion.Angle(transform.rotation, _targetPosition.rotation);
 
         _adjustedMoveSpeed = moveSpeed;
         _adjustedRotationSpeed = rotationSpeed;
 
+        //Adjust rotation or position speed to get a smooth animation between both
         if (_distanceToTarget > 0 && _angleToTarget > 0)
         {
             float positionTime = _distanceToTarget / moveSpeed;
@@ -45,35 +48,39 @@ public class CameraMenu : MonoBehaviour
 
             if (positionTime > rotationTime)
             {
-                _adjustedRotationSpeed = _angleToTarget / positionTime; // Ralentir la rotation
+                _adjustedRotationSpeed = _angleToTarget / positionTime; 
             }
             else
             {
-                _adjustedMoveSpeed = _distanceToTarget / rotationTime; // Ralentir le déplacement
+                _adjustedMoveSpeed = _distanceToTarget / rotationTime; 
             }
         }
 
-        // Déplacement et rotation synchronisés
+        //Handle animation for position and rotation
         transform.position = Vector3.MoveTowards(transform.position, _targetPosition.position, _adjustedMoveSpeed * Time.deltaTime);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetPosition.rotation, _adjustedRotationSpeed * Time.deltaTime);
     }
 
+    //Change camera position to MAIN
     public void SetMainPosition()
     {
         this.cameraPosition = CameraPosition.MAIN;
     }
 
+    //Change camera position to PLAY
     public void SetPlayPosition()
     {
         this.cameraPosition = CameraPosition.PLAY;
     }
 
+    //Change camera position to OPTION
     public void SetOptionPosition()
     {
         this.cameraPosition = CameraPosition.OPTION;
     }
 }
 
+//Enum used to set target transform
 public enum CameraPosition
 {
     MAIN,
