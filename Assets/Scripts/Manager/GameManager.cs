@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
         _isGamePaused = false;
         _isPlaying = false;
-        _firstTime = false;
+        _firstTime = true;
         CheckForPlayer();
         // If the player is in the scene and this is the first time, start the countdown
         if (IsPlayerInScene() && _firstTime)
@@ -184,8 +184,6 @@ public class GameManager : MonoBehaviour
         {
             // Resume the game
             Time.timeScale = 1f;
-
-
         }
         OnGamePaused?.Invoke(_isGamePaused);
     }
