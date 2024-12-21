@@ -16,13 +16,20 @@ public class RangeEnemyBehavior : EnemyBehavior
     private float _timeStamp;
 
     AntiGravityEnemy _antiGravityEnemy;
-    
+
     protected override void Start()
     {
         base.Start();
         _timeStamp = 0f;
         _antiGravityEnemy = GetComponent<AntiGravityEnemy>();
         _delayOnSight = 1f;
+    }
+
+    void OnEnable()
+    {
+        _delayOnSight = 1f;
+
+        _timeStamp = 0f;
     }
     void Update()
     {
@@ -39,7 +46,7 @@ public class RangeEnemyBehavior : EnemyBehavior
             {
                 AttackPlayer();
             }
-           
+
         }
         else
         {

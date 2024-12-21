@@ -28,7 +28,7 @@ public class EnemyManager : MonoBehaviour
         {
             enemy.SetActive(true);
             // If you want to reset other properties (like health, position)
-            // enemy.GetComponent<Enemy>().ResetState();
+            // enemy.GetComponent<EnemyBehavior>().ResetState();
         }
     }
 

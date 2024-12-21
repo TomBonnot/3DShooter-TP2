@@ -7,16 +7,11 @@ public class BasicProjectileBehavior : ProjectileBehavior
 
     protected void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            //Debug.Log("pew");
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.GetComponent<EnemyBehavior>() != null)
+        Debug.Log(collision.gameObject.name);
+        if (collision.gameObject.GetComponent<EnemyBehavior>() != null)
         {
             collision.gameObject.GetComponent<EnemyBehavior>().EnemyKilled();
-            Destroy(gameObject);
         }
-        
+        Destroy(gameObject);
     }
 }

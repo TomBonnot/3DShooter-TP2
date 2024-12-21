@@ -20,11 +20,18 @@ public abstract class EnemyBehavior : EntityBehavior
             //Die();            
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Fall")
+        {
+            Die();
+        }
+    }
 
     protected bool IsPlayerInSight()
     {
         RaycastHit hit;
-        if(Physics.Raycast(transform.position, (_player.transform.position - transform.position), out hit, _visionRange))
+        if (Physics.Raycast(transform.position, (_player.transform.position - transform.position), out hit, _visionRange))
         {
             if (hit.transform.gameObject.tag == "Player")
             {

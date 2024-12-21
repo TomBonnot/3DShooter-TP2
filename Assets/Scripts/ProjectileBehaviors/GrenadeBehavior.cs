@@ -9,6 +9,7 @@ public class GrenadeBehavior : ProjectileBehavior
     // Data of the launched projectile
     Grenade _grenade;
 
+
     public void Explode()
     {
         this.GetComponent<FMODUnity.StudioEventEmitter>().Play();
@@ -25,15 +26,17 @@ public class GrenadeBehavior : ProjectileBehavior
 
             if (_rbHit != null)
             {
+                float gravModifier = 1;
                 // Apply explosion force to every objects in the zone
-                // if (_rbHit.CompareTag(Tags.PLAYER))
-                // {
+                if (_rbHit.CompareTag(Tags.PLAYER))
+                {
+                    bool isGI = _rbHit.gameObject.GetComponent<AntiGravityPlayer>().IsGravityInverted;
+                    if (isGI)
+                        gravModifier *= -1;
 
-                // }
-                // else
-                // {
-                    _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion, 1);
-                //}
+
+                }
+                _rbHit.AddExplosionForce(_grenade._explosionForce, _explosionPosition, _grenade._radiusExplosion, gravModifier);
             }
 
             // Check if the hit object is an enemy

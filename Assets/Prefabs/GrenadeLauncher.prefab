@@ -187,7 +187,7 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 668051866751235749, guid: 0c6d2b12dd429624398f4eaf49065873, type: 3}
   _bulletSpeed: 20
   _bulletLieftime: 3
-  _maxAmmo: 1231231
+  _maxAmmo: 5
   isEquipped: 0
   _radiusExplosion: 3
   _explosionForce: 550

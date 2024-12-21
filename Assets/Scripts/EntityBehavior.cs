@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SingularityGroup.HotReload;
 using UnityEngine;
 
 public abstract class EntityBehavior : MonoBehaviour
@@ -20,7 +21,7 @@ public abstract class EntityBehavior : MonoBehaviour
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
         _initialRigidbody = GetComponent<Rigidbody>();
-
+        Debug.Log((_initialRigidbody == null).ToString());
         // Save initial local positions and rotations of all children
         _childrenInitialStates = new Dictionary<Transform, (Vector3, Quaternion)>();
         SaveChildrenStates(transform);
@@ -41,10 +42,12 @@ public abstract class EntityBehavior : MonoBehaviour
     }
 
     // Reset the entity to it's initial position and rotation
-    private void ResetState()
+    public void ResetState()
     {
         transform.position = _initialPosition;
-        transform.rotation = _initialRotation; 
+        transform.rotation = _initialRotation;
+        Debug.Log((_initialRigidbody == null).ToString());
+
         _initialRigidbody.linearVelocity = Vector3.zero;
         _initialRigidbody.angularVelocity = Vector3.zero;
 
@@ -58,7 +61,7 @@ public abstract class EntityBehavior : MonoBehaviour
                 child.localPosition = localPosition;
                 child.localRotation = localRotation;
             }
-            
+
         }
         Controller _controller = GetComponent<Controller>();
         _controller.ResetLastMoveDirection();
