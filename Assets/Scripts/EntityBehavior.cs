@@ -46,9 +46,8 @@ public abstract class EntityBehavior : MonoBehaviour
     }
 
     // Reset the entity to it's initial position and rotation
-    public void ResetState()
+    public virtual void ResetState()
     {
-        Debug.Log(this.name);
         transform.position = _initialPosition;
         transform.rotation = _initialRotation;
 
@@ -69,7 +68,8 @@ public abstract class EntityBehavior : MonoBehaviour
 
         }
         Controller _controller = GetComponent<Controller>();
-        _controller?.ResetLastMoveDirection();
+        if (_controller)
+            _controller.ResetLastMoveDirection();
     }
 
     protected virtual void Die()

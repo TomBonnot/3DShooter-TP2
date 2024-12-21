@@ -487,12 +487,23 @@ public class Controller : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
+        InPickupArea(col);
+    }
+
+    void OnTriggerStay(Collider col)
+    {
+        InPickupArea(col);
+    }
+
+    void InPickupArea(Collider col)
+    {
         if (col.CompareTag(Tags.WEAPON_SPAWNER))
         {
             WeaponBehavior weap = col.gameObject.GetComponentInChildren<WeaponBehavior>();
             if (weap)
                 Pickup(false, weap);
         }
+
     }
 
     void OnTriggerExit(Collider col)
@@ -502,6 +513,7 @@ public class Controller : MonoBehaviour
             col.gameObject.GetComponent<WeaponSpawnerBehavior>().resetWeapon();
         }
     }
+    
     private void OnDisable()
     {
         GameManager.Instance.OnGameOver -= EnableDisablePlayerControls;

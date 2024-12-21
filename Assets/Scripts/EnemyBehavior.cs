@@ -14,6 +14,12 @@ public abstract class EnemyBehavior : EntityBehavior
         _playerController = _player.GetComponent<Controller>();
         _playerJustSpotted = false;
     }
+
+    public override void ResetState()
+    {
+        base.ResetState();
+    }
+
     protected void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Player")

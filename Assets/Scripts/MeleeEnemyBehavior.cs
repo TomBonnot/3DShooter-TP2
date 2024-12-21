@@ -19,6 +19,26 @@ public class MeleeEnemyBehavior : EnemyBehavior
         _rb = GetComponent<Rigidbody>();
         _canAttack = true;
     }
+
+    void OnEnable()
+    {
+        StartCoroutine(SubscribeGameManager());
+    }
+
+    IEnumerator SubscribeGameManager()
+    {
+        while (GameManager.Instance == null)
+        {
+            yield return null;
+        }
+        GameManager.Instance.OnReloadLevel += ResetState;
+    }
+
+    void OnDisable()
+    {
+        GameManager.Instance.OnReloadLevel -= ResetState;
+    }
+
     void Update()
     {
         if (IsPlayerInSight())
@@ -46,7 +66,7 @@ public class MeleeEnemyBehavior : EnemyBehavior
         Vector3 pushDirection = new(_targetDirection.x * _pushStrength, _targetDirection.y + _verticalPushStrength, _targetDirection.z * _pushStrength);
         Debug.Log(pushDirection);
         _playerController.GetRigidbody().AddForce(pushDirection);
-       
+
     }
 
     private void ChasePlayer()

@@ -26,10 +26,9 @@ public class EnemyManager : MonoBehaviour
         // Reactivate all enemies
         foreach (var enemy in enemies)
         {
-            Instantiate(enemy);
             enemy.SetActive(true);
             // If you want to reset other properties (like health, position)
-            // enemy.GetComponent<EnemyBehavior>().ResetState();
+            enemy.GetComponent<EnemyBehavior>().ResetState();
         }
     }
 

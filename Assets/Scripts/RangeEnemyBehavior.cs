@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class RangeEnemyBehavior : EnemyBehavior
@@ -28,8 +29,26 @@ public class RangeEnemyBehavior : EnemyBehavior
     void OnEnable()
     {
         _delayOnSight = 1f;
-
         _timeStamp = 0f;
+        StartCoroutine(SubscribeGameManager());
+    }
+
+    IEnumerator SubscribeGameManager()
+    {
+        while (GameManager.Instance == null)
+        {
+            yield return null;
+        }
+        GameManager.Instance.OnReloadLevel += ResetState;
+    }
+
+    void OnDisable()
+    {
+        GameManager.Instance.OnReloadLevel -= ResetState;
+    }
+    public override void ResetState()
+    {
+        base.ResetState();
     }
     void Update()
     {
