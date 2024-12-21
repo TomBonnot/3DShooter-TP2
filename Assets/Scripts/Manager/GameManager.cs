@@ -61,13 +61,13 @@ public class GameManager : MonoBehaviour
     {
         _playerKills = 0;
         _totalScore = 0;
-        _baseTimeMultiplier = 10f;
+        _baseTimeMultiplier = 120f;
         _pointsPerKill = 100;
         _timeMultiplierFactor = 10;
 
         _isGamePaused = false;
         _isPlaying = false;
-        _firstTime = false;
+        _firstTime = true;
         CheckForPlayer();
         // If the player is in the scene and this is the first time, start the countdown
         if (IsPlayerInScene() && _firstTime)
@@ -251,10 +251,14 @@ public class GameManager : MonoBehaviour
     {
         // Calculate score based on time and kills
         // Lower time means higher score
+        Debug.Log(_baseTimeMultiplier);
+        Debug.Log(_elapsedTime);
         float timeMultiplier = Mathf.Max(1f, _baseTimeMultiplier - _elapsedTime);
         int killBonus = _playerKills * _pointsPerKill;
+        Debug.Log(killBonus);
 
         _totalScore = Mathf.RoundToInt(killBonus + (timeMultiplier * _timeMultiplierFactor));
+        Debug.Log(_totalScore);
 
         OnLevelCompleted?.Invoke(true, _totalScore);
     }

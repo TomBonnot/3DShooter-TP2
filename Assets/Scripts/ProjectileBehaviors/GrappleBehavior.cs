@@ -23,7 +23,6 @@ public class GrappleBehavior : ProjectileBehavior
         // Et on active le callback
         if (collision.gameObject.layer == Layers.GRAPPLEABLE)
         {
-            Debug.Log("Get Grappled");
             GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             hookCallback(collision.GetContact(0).point);
         }
