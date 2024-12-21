@@ -41,7 +41,7 @@ public class GrapplingBehavior : WeaponBehavior
 
     public override void Shoot()
     {
-        if (!weapon.expendsAmmo()) { _playerController.dropDepletedWeapon(this); StopSwing(); return; }
+        if (!weapon.expendsAmmo()) { StopSwing(); _playerController.dropDepletedWeapon(this); return; }
         _soundEmitter.Play();
         // On instantie en world space pour pas que le grapple bouge avec nous
         _shotGrapple = Instantiate(_projectilePrefab, weapon.gunPoint.transform.position, Quaternion.identity);
@@ -112,5 +112,12 @@ public class GrapplingBehavior : WeaponBehavior
     public override string representName()
     {
         return "Grappling Hook";
+    }
+
+    void OnDisable()
+    {
+        StopSwing();
+        _lr.positionCount = 0;
+        Destroy(_joint);
     }
 }
