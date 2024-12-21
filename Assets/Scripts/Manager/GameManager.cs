@@ -184,8 +184,6 @@ public class GameManager : MonoBehaviour
         {
             // Resume the game
             Time.timeScale = 1f;
-
-
         }
         OnGamePaused?.Invoke(_isGamePaused);
     }

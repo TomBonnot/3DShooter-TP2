@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SingularityGroup.HotReload;
 using UnityEngine;
 
 public abstract class EntityBehavior : MonoBehaviour
