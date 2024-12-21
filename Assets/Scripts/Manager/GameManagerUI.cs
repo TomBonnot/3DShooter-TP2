@@ -29,6 +29,7 @@ public class GameManagerUI : MonoBehaviour
         // Subscribe to various GameManager events to update the UI appropriately
         _gameManager.OnGameOver += ActiveDeadPanel;                  // Show the death panel when the game is over
         _gameManager.OnGamePaused += DisplayPauseMenu;               // Show or hide the pause menu
+        _gameManager.OnGamePaused += CloseOptionMenu;
         _gameManager.OnUpdateTimer += UpdateTimer;                   // Update the timer display
         _gameManager.OnReloadLevel += CloseDeadPanel;                // Hide the death panel when reloading the level
         _gameManager.OnScoreUpdated += UpdateScore;                  // Update the score on Game Over
@@ -57,8 +58,8 @@ public class GameManagerUI : MonoBehaviour
     **/
     private void ActiveDeadPanel()
     {
-        _deadPanel.SetActive(true);        
-        
+        _deadPanel.SetActive(true);
+
     }
 
     /**
@@ -75,7 +76,11 @@ public class GameManagerUI : MonoBehaviour
     private void DisplayPauseMenu(bool _state)
     {
         _pauseMenu.SetActive(_state);
-        _optionMenu.SetActive(_state);        
+    }
+
+    private void CloseOptionMenu(bool _)
+    {
+        _optionMenu.SetActive(false);
     }
 
     /**
@@ -93,9 +98,10 @@ public class GameManagerUI : MonoBehaviour
     {
         _gameManager.OnGameOver -= ActiveDeadPanel;
         _gameManager.OnGamePaused -= DisplayPauseMenu;
+        _gameManager.OnGamePaused -= CloseOptionMenu;
         _gameManager.OnUpdateTimer -= UpdateTimer;
         _gameManager.OnReloadLevel -= CloseDeadPanel;
-       _gameManager.OnScoreUpdated -= UpdateScore;
+        _gameManager.OnScoreUpdated -= UpdateScore;
         _gameManager.OnLevelCompleted -= DisplayLevelCompletedPanel;
     }
 }
